@@ -1,19 +1,22 @@
-# chat-docs
+# Chat - Docs
 This project aims to provider an easy and friendly Ai-Driven application to manager files and chat with them.
 
-Chat Doc! becomes Chat Docs! Guru a commercial freemon web application [https://chatdocs.guru/]
-If need more information about Chat Docs! Guru restful api [https://api.chatdocs.guru/api-docs/]
+Chat Doc! becomes Chat Docs! Guru a commercial freemon web application, please go to https://chatdocs.guru/
 
-To discuss how I implemented it, please call me on [https://www.linkedin.com/in/renato-santos-ti/] or [https://calendly.com/renatosantos-ti]
+If you need more information about Chat Docs! Guru restful api [click here](https://api.chatdocs.guru/api-docs/).
 
-# Chat - Docs
+To discuss how I implemented it, please call me on:
+ - https://www.linkedin.com/in/renato-santos-ti/ or 
+ - https://calendly.com/renatosantos-ti
 
-### This project aims to provider an easy and friendly Ai-Driven application to manager files and chat with them.
+# Chat - Docs!
 
-Chat with your PDF documents using AI superpowers
+### Chat with your PDF documents using AI superpowers
 
-This REST API was developed based on my another project called TS-Clean-Archicteture-Rest-API-Boilerplate but
-as clean code strategy some enhancement were done here. You must are free to colaborate on that project - https://github.com/renatosantosti/TS-Clean-Architecture-Rest-APi-Boilerplate
+This Chat - Docs! RESTFul API was developed based on my another project called TS-Clean-Archicteture-Rest-API-Boilerplate, following a
+clean code strategy, some enhancements were done on that new project.
+
+You are welcome to colaborate on TS-Clean-Archicteture-Rest-API-Boilerplate - https://github.com/renatosantosti/TS-Clean-Architecture-Rest-APi-Boilerplate
 
 ### Stack applied on this project:
 
