@@ -1,6 +1,5 @@
 import { Request, Response, NextFunction } from "express";
 import {
-  internalHttpError,
   missingParamHttpError,
   unauthorizedHttpError,
 } from "../helpers/http-helper";

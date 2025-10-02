@@ -147,3 +147,4 @@ dist
 
 # npm
 package-lock.json
+*.tar
