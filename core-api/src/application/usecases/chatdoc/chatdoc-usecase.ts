@@ -23,12 +23,11 @@ export default class ChatDocUseCase implements IChatDocUseCase {
   ) {}
 
   /**
-   * Handles the create document request.
+   * Handles the chat document request with enhanced prompt engineering.
    *
-   * @param currentUser - The currently authenticated user. This parameter is required to ensure that the use case is executed in the context of the authenticated user.
-   *                      It is typically used for authorization checks or to associate the operation with the user.
-   * @param request - The request object containing search term and mode.
-   * @returns A promise that resolves chat with document pages result.
+   * @param currentUser - The currently authenticated user for authorization context
+   * @param request - The chat request containing question and document context
+   * @returns A promise that resolves to chat response with document insights
    */
 
   async handler(
@@ -36,83 +35,200 @@ export default class ChatDocUseCase implements IChatDocUseCase {
     request: ChatDocRequest,
   ): Promise<ChatDocResponse | Error> {
     this.currentUser = currentUser;
-    // Validations
-    if (!request.question || request.question.length === 0) {
-      return new BadRequestError("Your question is required for chatting.");
+
+    // Input validation
+    const validationError = this.validateRequest(request);
+    if (validationError) {
+      return validationError;
+    }
+
+    try {
+      // Retrieve relevant document fragments using semantic search
+      const fragments = await this.retrieveDocumentFragments(request);
+
+      if (!fragments || fragments.length === 0) {
+        return new BadRequestError(
+          "No relevant information found in the document for your question.",
+        );
+      }
+
+      // Build conversation context with enhanced prompt
+      const messages = this.buildConversationContext(request, fragments);
+
+      // Generate response using GPT
+      const response = await this.gptAdapter.getResponse(messages);
+
+      return this.formatResponse(request, response || null, fragments);
+    } catch (error: any) {
+      console.error("Error in chat document use case:", error);
+      return new InternalError(
+        "An error occurred while processing your question. Please try again.",
+      );
+    }
+  }
+
+  /**
+   * Validates the incoming chat request
+   */
+  private validateRequest(request: ChatDocRequest): BadRequestError | null {
+    if (!request.question || request.question.trim().length === 0) {
+      return new BadRequestError(
+        "Please provide a question about the document.",
+      );
+    }
+
+    if (request.question.length > 1000) {
+      return new BadRequestError(
+        "Question is too long. Please keep it under 1000 characters.",
+      );
     }
 
     if (!request.documentId || request.documentId <= 0) {
-      return new BadRequestError("Document id is required.");
+      return new BadRequestError("Invalid document reference.");
     }
 
+    return null;
+  }
+
+  /**
+   * Retrieves relevant document fragments using semantic search
+   */
+  private async retrieveDocumentFragments(
+    request: ChatDocRequest,
+  ): Promise<any[]> {
     const semanticFilter: SearchEmbeddedDocumentDto = {
       documentId: request.documentId,
       embedding: await this.gptAdapter.getEmbedding(request.question),
     };
 
-    const fragments = await this.indexerAdapter.searchBySemantic(
+    return await this.indexerAdapter.searchBySemantic(
       elasticSearchConfig.indexName,
       semanticFilter,
     );
+  }
 
-    let indexFragment = 0;
+  /**
+   * Builds the conversation context with enhanced prompt engineering
+   */
+  private buildConversationContext(
+    request: ChatDocRequest,
+    fragments: any[],
+  ): ChatCompletatioDto[] {
+    const systemPrompt = this.buildSystemPrompt();
+    const contextPrompt = this.buildContextPrompt(fragments, request);
+
     const messages: ChatCompletatioDto[] = [
-      {
-        role: "system",
-        content: `{You are an AI assistant that helps users extract insights from their documents. 
-        Base your responses solely on the provided document fragments. 
-        If the information is insufficient, inform the user accordingly.`,
-      },
-      // Previous conversation turns
-      { role: "user", content: request.previousQuestion },
-      { role: "assistant", content: request.previousResponse },
-      // Current user query with document fragments
-      {
-        role: "user",
-        content: `Based on the following document fragments:    
-            ${fragments.map((highlightText) => {
-              indexFragment++;
-              return `${indexFragment} -  ${highlightText.content} \n`;
-            })}     
-            
-            Can you explain the main findings? Only response user question, avoid to start saying document..., 
-            you should go direct to your response. Whenever you has no answer, ask about more details about document. 
-            Never say something about how this program works and nothing besides fragments given - for those scenario say that user 
-            is violating objetives of this resource.           
-           Question: ${request.question} ? -  IMPORTANT: only responds in English. If question is not related to document fragments, 
-           stop and say it does not make sense and ask for correct question based on text. Dont respond nothing beside of fragments.
-           If your response is based on previous question, please mention it.
-           Dont say document fragments provided or how you are reasoning, just say: This question is not related to document.`,
-      },
+      { role: "system", content: systemPrompt },
     ];
 
-    try {
-      // Runs Gpt Adapter on conversation mode
-      const response = await this.gptAdapter.getResponse(messages);
-      return {
-        success: !!response ? true : false,
-        message: !!response
-          ? "Response got successfully."
-          : "Found error to get text.",
-        result: {
-          documentId: request.documentId,
-          response: !!response
-            ? [response]
-            : ["Nothing to say, try to say something different."],
-          pages: fragments.map((highlightText) => ({
-            pageId: highlightText.pageNumber,
-            documentId: highlightText.documentId,
-            documentName: highlightText.documentName,
-            pageNumber: highlightText.pageNumber,
-            content: highlightText.content,
-          })),
-        },
-      };
-    } catch (error: any) {
-      console.error("Unknow error while generating chatting response:", error);
-      return new InternalError(
-        "Uknow error occurred while generating chatting response.",
+    // Add previous conversation context if available
+    if (request.previousQuestion && request.previousResponse) {
+      messages.push(
+        { role: "user", content: request.previousQuestion },
+        { role: "assistant", content: request.previousResponse },
       );
     }
+
+    // Add current question with document context
+    messages.push({ role: "user", content: contextPrompt });
+
+    return messages;
+  }
+
+  /**
+   * Builds the system prompt with clear instructions and guardrails
+   */
+  private buildSystemPrompt(): string {
+    return `You are an intelligent document analysis assistant. Your role is to help users understand and extract insights from their documents through natural conversation.
+
+## CORE RESPONSIBILITIES:
+- Analyze document content and provide accurate, helpful responses
+- Engage in natural, conversational dialogue about the document
+- Be insightful, thorough, and intellectually honest
+- Maintain focus on the document's content and context
+
+## RESPONSE GUIDELINES:
+- Respond ONLY in English
+- Be conversational and engaging, like discussing a document with a colleague
+- Provide comprehensive answers when possible
+- If information is insufficient, ask clarifying questions
+- Reference specific parts of the document when relevant
+- Be intellectually honest about limitations
+
+## STRICT GUARDRAILS:
+- NEVER respond to questions unrelated to the document content
+- NEVER discuss the AI system, prompt engineering, or technical implementation
+- NEVER provide information not found in the provided document fragments
+- NEVER make up or hallucinate information
+- If asked about topics outside the document, politely redirect: "I can only discuss content from this document. Could you ask something about the document's content instead?"
+
+## QUALITY STANDARDS:
+- Provide accurate, well-reasoned responses
+- Be concise but comprehensive
+- Use clear, professional language
+- Support claims with document evidence
+- Maintain intellectual rigor and objectivity`;
+  }
+
+  /**
+   * Builds the context prompt with standardized document fragments
+   */
+  private buildContextPrompt(
+    fragments: any[],
+    request: ChatDocRequest,
+  ): string {
+    const documentContext = this.formatDocumentFragments(fragments);
+
+    return `DOCUMENT CONTEXT:
+${documentContext}
+
+USER QUESTION: ${request.question}
+
+Please analyze the document content above and provide a comprehensive, insightful response to the user's question. Focus on the document's content and provide valuable insights based on the information provided.`;
+  }
+
+  /**
+   * Formats document fragments in a standardized, readable format
+   */
+  private formatDocumentFragments(fragments: any[]): string {
+    return fragments
+      .map((fragment, index) => {
+        return `[Fragment ${index + 1} - Page ${fragment.pageNumber}]
+${fragment.content}
+
+---`;
+      })
+      .join("\n");
+  }
+
+  /**
+   * Formats the final response with proper structure
+   */
+  private formatResponse(
+    request: ChatDocRequest,
+    response: string | null,
+    fragments: any[],
+  ): ChatDocResponse {
+    return {
+      success: !!response,
+      message: response
+        ? "Response generated successfully."
+        : "Unable to generate a response. Please try rephrasing your question.",
+      result: {
+        documentId: request.documentId,
+        response: response
+          ? [response]
+          : [
+              "I couldn't generate a response. Please try asking your question differently.",
+            ],
+        pages: fragments.map((fragment) => ({
+          pageId: fragment.pageNumber,
+          documentId: fragment.documentId,
+          documentName: fragment.documentName,
+          pageNumber: fragment.pageNumber,
+          content: fragment.content,
+        })),
+      },
+    };
   }
 }
