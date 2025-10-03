@@ -42,6 +42,7 @@ function* handleLogout() {
     } catch (err) {
       console.error("Logout error", err);
     }
+
     yield put(logoutSuccess());
   });
 }

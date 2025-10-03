@@ -158,7 +158,6 @@ authRouter.post("/auth/login", async (req, res) => {
           sameSite: serverConfig.cookieSameSite,
           maxAge: 2 * 60 * 60 * 1000, // 2 hours
           path: "/", // Ensure cookie is available for all paths
-          // Don't set domain in development to allow cross-port cookie sharing
         })
         .json({ user: { id: userId, name: userFullName } });
     }
@@ -264,10 +263,6 @@ authRouter.post("/auth/logout", (req, res) => {
  */
 authRouter.get("/auth/check", async (req, res) => {
   const token = req.cookies.token;
-
-  // Debug logs for auth/check endpoint only
-  console.log("Auth/check - Cookies:", req.cookies);
-  console.log("Auth/check - Token:", token);
 
   if (!token) {
     return res.status(401).json({ message: "Not authenticated" });

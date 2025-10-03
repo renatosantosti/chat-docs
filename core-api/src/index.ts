@@ -60,6 +60,9 @@ app.use(
         .filter((host) => host.trim() !== ""),
     ], // Allow requests from your React app
     credentials: true, // Allow cookies to be sent with requests
+    methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+    allowedHeaders: ["Content-Type", "Authorization", "Cookie"],
+    exposedHeaders: ["Set-Cookie"],
   }),
 );
 app.use(cookieParser()); // Use cookie-parser middleware
