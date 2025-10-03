@@ -40,8 +40,9 @@ const App = () => {
   const dispatch = useDispatch();
 
   useEffect(() => {
-    dispatch(checkAuthRequest()); // Check authentication on app load
-  }, [dispatch]);
+    // Only check auth once on app load
+    dispatch(checkAuthRequest());
+  }, []); // Remove dispatch from dependencies to prevent re-runs
 
   return (
     <QueryClientProvider client={queryClient}>

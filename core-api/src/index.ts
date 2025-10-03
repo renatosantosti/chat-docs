@@ -21,12 +21,6 @@ const moduleAlias = require("module-alias");
 moduleAlias.addAliases({
   "@": path.join(__dirname),
 });
-// if (process.env.NODE_ENV === "development") {
-//   const moduleAlias = require("module-alias");
-//   moduleAlias.addAliases({
-//     "@": path.join(__dirname),
-//   });
-// }
 
 import "reflect-metadata";
 import express, { Application } from "express";
@@ -55,11 +49,15 @@ const app: Application = express();
 app.use(
   cors({
     origin: [
-      "http://127.0.0.1:8080",
-      "http://localhost:8080",
+      "http://127.0.0.1:3000",
+      "http://localhost:3000",
       "http://127.0.0.1:4173",
       "http://localhost:4173",
-      ...serverConfig.apiClientHosts.split(","),
+      "http://127.0.0.1:8080",
+      "http://localhost:8080",
+      ...serverConfig.apiClientHosts
+        .split(",")
+        .filter((host) => host.trim() !== ""),
     ], // Allow requests from your React app
     credentials: true, // Allow cookies to be sent with requests
   }),

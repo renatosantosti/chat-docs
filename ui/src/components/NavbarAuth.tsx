@@ -1,14 +1,13 @@
-
 import { Link, useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { FileText, Search, LogOut, User } from "lucide-react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { 
+import {
   NavigationMenu,
   NavigationMenuItem,
   NavigationMenuList,
   NavigationMenuLink,
-  navigationMenuTriggerStyle
+  navigationMenuTriggerStyle,
 } from "@/components/ui/navigation-menu";
 import { useDispatch, useSelector } from "react-redux";
 import { AuthState, logoutRequest } from "@/store/auth/slices";
@@ -19,11 +18,12 @@ const NavbarAuth = () => {
   const navigate = useNavigate();
   const authState = useSelector((store: { auth: AuthState }) => store.auth);
   const user = authState.user;
-  const isAuthenticated =  authState.isAuthenticated;
+  const isAuthenticated = authState.isAuthenticated;
 
   useEffect(() => {
-    if (!isAuthenticated) {
-      navigate('/login'); 
+    // Only redirect if not already on login page and not authenticated
+    if (!isAuthenticated && window.location.pathname !== "/login") {
+      navigate("/login");
     }
   }, [isAuthenticated, navigate]);
 
@@ -38,14 +38,19 @@ const NavbarAuth = () => {
           <div className="flex items-center space-x-8">
             {/* Logo */}
             <Link to="/documents" className="flex-shrink-0 flex items-center">
-              <span className="text-2xl font-bold gradient-text">Chat Doc!</span>
+              <span className="text-2xl font-bold gradient-text">
+                Chat Doc!
+              </span>
             </Link>
 
             {/* Main Navigation */}
             <NavigationMenu>
               <NavigationMenuList>
                 <NavigationMenuItem>
-                  <NavigationMenuLink asChild className={navigationMenuTriggerStyle()}>
+                  <NavigationMenuLink
+                    asChild
+                    className={navigationMenuTriggerStyle()}
+                  >
                     <Link to="/documents" className="flex items-center">
                       <FileText className="mr-2 h-4 w-4" />
                       <span>My Documents</span>
@@ -53,7 +58,10 @@ const NavbarAuth = () => {
                   </NavigationMenuLink>
                 </NavigationMenuItem>
                 <NavigationMenuItem>
-                  <NavigationMenuLink asChild className={navigationMenuTriggerStyle()}>
+                  <NavigationMenuLink
+                    asChild
+                    className={navigationMenuTriggerStyle()}
+                  >
                     <Link to="/search" className="flex items-center">
                       <Search className="mr-2 h-4 w-4" />
                       <span>Search</span>
@@ -75,8 +83,8 @@ const NavbarAuth = () => {
               </Avatar>
               <span className="text-sm font-medium">{user?.name}</span>
             </div>
-            <Button 
-              variant="ghost" 
+            <Button
+              variant="ghost"
               size="sm"
               onClick={handleLogout}
               className="text-gray-700"
