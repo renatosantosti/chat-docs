@@ -1,6 +1,5 @@
 import * as RadioGroup from "@radix-ui/react-radio-group";
 import Highlighter from "react-highlight-words";
-import { Typewriter } from "react-simple-typewriter";
 import { Search, Download, Bot } from "lucide-react";
 import { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
@@ -11,6 +10,7 @@ import { DocumentState } from "@/store/document/slices";
 import { AuthState } from "@/store/auth/slices";
 import { useNavigate, useParams } from "react-router-dom";
 import Loading from "@/components/Loading";
+import MarkdownTypewriter from "@/components/MarkdownTypewriter";
 
 const ChatDoc = () => {
   const navigate = useNavigate();
@@ -171,17 +171,13 @@ const ChatDoc = () => {
           <div className="absolute top-4 right-4 text-gray-400">
             <Bot className="w-5 h-5" />
           </div>
-          <p className="text-sm text-gray-800">
-            <Typewriter
-              key={response}
-              words={[response || getResponseText()]}
-              loop={1}
-              typeSpeed={25}
-              cursor
-              cursorStyle="_"
-              onLoopDone={() => {}}
+          <div className="text-sm">
+            <MarkdownTypewriter
+              text={response || getResponseText()}
+              speed={25}
+              className="prose prose-sm max-w-none"
             />
-          </p>
+          </div>
         </div>
       )}
       <Loading isLoading={isLoading}></Loading>
