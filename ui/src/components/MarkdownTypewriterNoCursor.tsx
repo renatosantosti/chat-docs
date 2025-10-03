@@ -2,14 +2,14 @@ import React, { useState, useEffect } from "react";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
 
-interface MarkdownTypewriterProps {
+interface MarkdownTypewriterNoCursorProps {
   text: string;
   speed?: number;
   onComplete?: () => void;
   className?: string;
 }
 
-const MarkdownTypewriter: React.FC<MarkdownTypewriterProps> = ({
+const MarkdownTypewriterNoCursor: React.FC<MarkdownTypewriterNoCursorProps> = ({
   text,
   speed = 25,
   onComplete,
@@ -47,35 +47,21 @@ const MarkdownTypewriter: React.FC<MarkdownTypewriterProps> = ({
         components={{
           // Customize styling for markdown elements
           p: ({ children }) => (
-            <p className="mb-3 text-gray-800 leading-relaxed">
-              {children}
-              {!isComplete && (
-                <span className="inline-block w-0.5 h-4 bg-gray-600 animate-pulse ml-1"></span>
-              )}
-            </p>
+            <p className="mb-3 text-gray-800 leading-relaxed">{children}</p>
           ),
           h1: ({ children }) => (
             <h1 className="text-2xl font-bold mb-4 text-gray-900">
               {children}
-              {!isComplete && (
-                <span className="inline-block w-0.5 h-6 bg-gray-600 animate-pulse ml-1"></span>
-              )}
             </h1>
           ),
           h2: ({ children }) => (
             <h2 className="text-xl font-semibold mb-3 text-gray-900">
               {children}
-              {!isComplete && (
-                <span className="inline-block w-0.5 h-5 bg-gray-600 animate-pulse ml-1"></span>
-              )}
             </h2>
           ),
           h3: ({ children }) => (
             <h3 className="text-lg font-semibold mb-2 text-gray-900">
               {children}
-              {!isComplete && (
-                <span className="inline-block w-0.5 h-5 bg-gray-600 animate-pulse ml-1"></span>
-              )}
             </h3>
           ),
           ul: ({ children }) => (
@@ -86,14 +72,7 @@ const MarkdownTypewriter: React.FC<MarkdownTypewriterProps> = ({
               {children}
             </ol>
           ),
-          li: ({ children }) => (
-            <li className="text-gray-800">
-              {children}
-              {!isComplete && (
-                <span className="inline-block w-0.5 h-4 bg-gray-600 animate-pulse ml-1"></span>
-              )}
-            </li>
-          ),
+          li: ({ children }) => <li className="text-gray-800">{children}</li>,
           strong: ({ children }) => (
             <strong className="font-semibold text-gray-900">{children}</strong>
           ),
@@ -138,4 +117,4 @@ const MarkdownTypewriter: React.FC<MarkdownTypewriterProps> = ({
   );
 };
 
-export default MarkdownTypewriter;
+export default MarkdownTypewriterNoCursor;

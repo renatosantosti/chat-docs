@@ -11,6 +11,7 @@ import { AuthState } from "@/store/auth/slices";
 import { useNavigate, useParams } from "react-router-dom";
 import Loading from "@/components/Loading";
 import MarkdownTypewriter from "@/components/MarkdownTypewriter";
+import MarkdownTypewriterNoCursor from "@/components/MarkdownTypewriterNoCursor";
 
 const ChatDoc = () => {
   const navigate = useNavigate();
@@ -172,7 +173,7 @@ const ChatDoc = () => {
             <Bot className="w-5 h-5" />
           </div>
           <div className="text-sm">
-            <MarkdownTypewriter
+            <MarkdownTypewriterNoCursor
               text={response || getResponseText()}
               speed={25}
               className="prose prose-sm max-w-none"
