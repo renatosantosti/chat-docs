@@ -10,7 +10,6 @@ import { DocumentState } from "@/store/document/slices";
 import { AuthState } from "@/store/auth/slices";
 import { useNavigate, useParams } from "react-router-dom";
 import Loading from "@/components/Loading";
-import MarkdownTypewriter from "@/components/MarkdownTypewriter";
 import MarkdownTypewriterNoCursor from "@/components/MarkdownTypewriterNoCursor";
 
 const ChatDoc = () => {
@@ -213,16 +212,24 @@ const ChatDoc = () => {
             >
               <div className="col-span-2 text-gray-700">{res.pageNumber}</div>
               <div className="col-span-8 text-gray-600">
-                <Highlighter
-                  highlightClassName=""
-                  searchWords={[...searchTerm.split(" ")]}
-                  autoEscape={true}
-                  textToHighlight={
-                    res.content.length > 100
+                {mode !== "chat" ? (
+                  <Highlighter
+                    highlightClassName=""
+                    searchWords={[...searchTerm.split(" ")]}
+                    autoEscape={true}
+                    textToHighlight={
+                      res.content.length > 100
+                        ? `${res.content.substring(0, limitText)}...`
+                        : res.content
+                    }
+                  />
+                ) : (
+                  <span>
+                    {res.content.length > 100
                       ? `${res.content.substring(0, limitText)}...`
-                      : res.content
-                  }
-                />
+                      : res.content}
+                  </span>
+                )}
               </div>
               <div className="col-span-2 text-right">
                 <Button
