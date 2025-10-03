@@ -2,7 +2,13 @@ import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
+import {
+  BrowserRouter,
+  Routes,
+  Route,
+  Navigate,
+  useLocation,
+} from "react-router-dom";
 import Index from "./pages/Index";
 import Login from "./pages/Login";
 import Signup from "./pages/Signup";
@@ -36,18 +42,31 @@ const PublicRoute = ({ element }: { element: React.ReactNode }) => (
   </>
 );
 
-const App = () => {
+// Component to handle auth check only for protected routes
+const AuthChecker = () => {
   const dispatch = useDispatch();
+  const location = useLocation();
 
   useEffect(() => {
-    // Only check auth once on app load
-    dispatch(checkAuthRequest());
-  }, []); // Remove dispatch from dependencies to prevent re-runs
+    // Define public routes that don't require authentication
+    const publicRoutes = ["/", "/login", "/signup"];
+    const currentPath = location.pathname;
 
+    // Only check auth for protected routes
+    if (!publicRoutes.includes(currentPath)) {
+      dispatch(checkAuthRequest());
+    }
+  }, [location.pathname, dispatch]);
+
+  return null; // This component doesn't render anything
+};
+
+const App = () => {
   return (
     <QueryClientProvider client={queryClient}>
       <TooltipProvider>
         <BrowserRouter>
+          <AuthChecker />
           <Toaster />
           <ToastContainer />
           <Sonner />
