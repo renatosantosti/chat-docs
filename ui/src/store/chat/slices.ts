@@ -39,7 +39,7 @@ const chatSlice = createSlice({
       state.isLoading = true;
       state.wasActivated = true;
       state.filtered = false;
-      if (action.payload.mode === "chat") state.response = "thinking...";
+      if (action.payload.mode === "chat") state.response = "Thinking...";
     },
 
     chatRequestSuccess: (

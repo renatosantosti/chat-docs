@@ -4,7 +4,12 @@ import { Search, Download, Bot } from "lucide-react";
 import { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { useDispatch, useSelector } from "react-redux";
-import { askQuestion, chatRequest, ChatState } from "@/store/chat/slices";
+import {
+  askQuestion,
+  chatRequest,
+  clearResult,
+  ChatState,
+} from "@/store/chat/slices";
 import { ChatMode } from "@/shared/types";
 import { DocumentState } from "@/store/document/slices";
 import { AuthState } from "@/store/auth/slices";
@@ -60,12 +65,28 @@ const ChatDoc = () => {
 
   useEffect(() => {
     if (hasResults) {
-      setPages(result[0].pages);
-      setPriviousTerm(result[0].term);
+      const currentResult = result[0];
 
-      if (searchTerm === "" && showTermHistory) setSearchTerm(result[0].term);
+      // Only restore state if we have a result and the mode matches the result type
+      if (currentResult) {
+        const isChatResult =
+          currentResult.response && currentResult.response.length > 0;
+        const isSearchResult =
+          currentResult.pages && currentResult.pages.length > 0;
+
+        if (
+          (mode === "chat" && isChatResult) ||
+          (mode === "pages" && isSearchResult)
+        ) {
+          setPages(currentResult.pages);
+          setPriviousTerm(currentResult.term);
+
+          if (searchTerm === "" && showTermHistory)
+            setSearchTerm(currentResult.term);
+        }
+      }
     }
-  }, [hasResults, result]);
+  }, [hasResults, result, mode, searchTerm, showTermHistory]);
 
   useEffect(() => {
     if (
@@ -130,6 +151,13 @@ const ChatDoc = () => {
           value={mode}
           onValueChange={(val) => {
             setMode(val as ChatMode);
+            // Reset previous state when switching modes
+            setPages([]);
+            setPriviousTerm("");
+            setSearchTerm("");
+            setShowTermHistory(false);
+            // Clear Redux state to prevent old results from showing
+            dispatch(clearResult());
             dispatch(askQuestion());
           }}
         >
