@@ -156,7 +156,8 @@ authRouter.post("/auth/login", async (req, res) => {
           httpOnly: true,
           secure: serverConfig.cookieSecurity,
           sameSite: serverConfig.cookieSameSite,
-          maxAge: 2 * 60 * 60 * 1000, //15 min - change it to get from .env
+          maxAge: 2 * 60 * 60 * 1000, // 2 hours
+          path: "/", // Ensure cookie is available for all paths
         })
         .json({ user: { id: userId, name: userFullName } });
     }
@@ -293,7 +294,8 @@ authRouter.get("/auth/check", async (req, res) => {
         httpOnly: true,
         secure: serverConfig.cookieSecurity,
         sameSite: serverConfig.cookieSameSite,
-        maxAge: 2 * 60 * 60 * 1000, //15 min - change it to get from .env
+        maxAge: 2 * 60 * 60 * 1000, // 2 hours
+        path: "/", // Ensure cookie is available for all paths
       })
       .json({ user: { id: user?.id, name: user?.name } });
   } catch (err) {

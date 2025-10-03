@@ -14,17 +14,32 @@ export class SlasticSearchIndexer implements IIndexerAdapter {
   constructor(
     host: string,
     port: number,
-    user: string,
-    password: string,
-    embeddingDims: number,
+    apiKey?: string,
+    user?: string,
+    password?: string,
+    embeddingDims: number = 1536,
   ) {
-    let conf = {
+    let conf: any = {
       node: `${host}:${port}`,
-      auth: {
+    };
+
+    // Priority: apiKey > user/password
+    if (apiKey && apiKey.trim() !== "") {
+      conf.auth = {
+        apiKey: apiKey,
+      };
+    } else if (
+      user &&
+      password &&
+      user.trim() !== "" &&
+      password.trim() !== ""
+    ) {
+      conf.auth = {
         username: user,
         password: password,
-      },
-    };
+      };
+    }
+
     try {
       this.client = new Client({ ...conf });
       this.embeddingDims = embeddingDims;

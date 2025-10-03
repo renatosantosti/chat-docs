@@ -14,7 +14,9 @@ export default class UserRepository implements IUserRepository {
 
   async getOneByEmail(email: string): Promise<User | null> {
     const user = await DbContext.Users.findOne({ where: { email } });
-    return user as User | null;
+    // get sequelize user textplain
+    const userPlain = user?.get({ plain: true });
+    return userPlain as User | null;
   }
 
   async getAll(): Promise<User[] | null> {

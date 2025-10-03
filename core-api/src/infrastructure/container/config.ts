@@ -161,6 +161,7 @@ const openAiAdaptter = new OpenAIGptTextAdapter(
 const slasticSearchIndexer = new SlasticSearchIndexer(
   elasticSearchConfig.host,
   elasticSearchConfig.port,
+  elasticSearchConfig.apiKey,
   elasticSearchConfig.user,
   elasticSearchConfig.password,
   openAiApiConfig.embeddingDims,

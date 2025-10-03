@@ -1,4 +1,20 @@
 import * as path from "path";
+import dotenv from "dotenv";
+
+// Load environment variables first
+const envPath = path.resolve(
+  process.cwd(),
+  process.env.NODE_ENV === "production" ? `.env` : `.env.development`,
+);
+
+const result = dotenv.config({
+  path: envPath,
+});
+
+if (result.error) {
+  console.error("Error loading .env file:", result.error);
+}
+
 import "module-alias/register";
 
 const moduleAlias = require("module-alias");
