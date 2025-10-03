@@ -28,12 +28,7 @@ const initialState: ChatState = {
   wasActivated: false,
   isLoading: false,
   filtered: false,
-  response: `Hi guys, I will leverage this moment to speak a little bit about me...well as you know I am Renato Santos. 
-    During my career, I worked in different industries and with different approaches to solving problems. So, I am flexible, innovative, and fast-paced to learn new things. 
-    I feel free to explore new things and jump to another new technology whenever it is needed or I will explore it.
-    I THINK SOLUTION IS MORE THAN TECHNOLOGIES - SO TECH IS TOOLS TO BE USED AND COMBINED TO ACHIEVE A SMART SOLUTION.
-    Be an expert is good, I am an expert whenever I have been working for a long time with certain stuff, but I am always ready to explore new things, that´s my spirit. Sorry to stop your flow! 
-    Go ahead, ask something to the doc!`,
+  response: "",
 };
 
 const chatSlice = createSlice({

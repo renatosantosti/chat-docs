@@ -63,6 +63,7 @@ app.use(
     methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
     allowedHeaders: ["Content-Type", "Authorization", "Cookie"],
     exposedHeaders: ["Set-Cookie"],
+    optionsSuccessStatus: 200, // For legacy browser support
   }),
 );
 app.use(cookieParser()); // Use cookie-parser middleware

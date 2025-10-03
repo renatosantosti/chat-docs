@@ -29,7 +29,10 @@ export class AuthResponse implements IBaseUseCaseResponse {
    * The authentication user´s full name.
    */
   readonly userFullName: string;
-
+  /**
+   * The authentication user´s email.
+   */
+  readonly email: string;
   /**
    * Constructs a new AuthResponse object.
    *
@@ -43,12 +46,14 @@ export class AuthResponse implements IBaseUseCaseResponse {
     token: string,
     userId: number,
     userFullName: string,
+    email: string,
   ) {
     this.success = success;
     this.message = message;
     this.token = token;
     this.userId = userId;
     this.userFullName = userFullName;
+    this.email = email;
   }
 }
 

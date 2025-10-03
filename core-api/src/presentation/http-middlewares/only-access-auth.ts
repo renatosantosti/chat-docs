@@ -32,11 +32,11 @@ const onlyWithAccessAuthMiddleware = async (
   }
 
   try {
-    const validToekn = new PasswordHashAdapter().validateToken(
+    const validToken = passwordHashAdapter.validateToken(
       token,
       authConfig.secret,
     );
-    if (!validToekn) {
+    if (!validToken) {
       response = unauthorizedHttpError(new UnauthorizedError());
       return res.status(response.statusCode).send(response);
     }

@@ -149,17 +149,28 @@ authRouter.post("/auth/login", async (req, res) => {
      * TODO: Renato Santos - 30-04-2024 - Add token expiration time from .env file
      * Currently, the token expiration is hardcoded. Update this to fetch the value from the environment variable TOKEN_EXPIRES_IN.
      */
-    const { token, userId, userFullName } = (response as any)?.data;
+    const { token, userId, userFullName, email } = (response as any)?.data;
     if (token && userId && userFullName) {
+      // Configure cookie based on environment
+      const cookieOptions: any = {
+        httpOnly: true,
+        secure: serverConfig.cookieSecurity,
+        maxAge: 2 * 60 * 60 * 1000, // 2 hours
+        path: "/", // Ensure cookie is available for all paths
+      };
+
+      // For development, use lax sameSite and don't set secure
+      if (serverConfig.node_env === "development") {
+        cookieOptions.sameSite = "lax";
+        cookieOptions.secure = false;
+      } else {
+        cookieOptions.sameSite = serverConfig.cookieSameSite;
+        cookieOptions.secure = serverConfig.cookieSecurity;
+      }
+
       return res
-        .cookie("token", token, {
-          httpOnly: true,
-          secure: serverConfig.cookieSecurity,
-          sameSite: serverConfig.cookieSameSite,
-          maxAge: 2 * 60 * 60 * 1000, // 2 hours
-          path: "/", // Ensure cookie is available for all paths
-        })
-        .json({ user: { id: userId, name: userFullName } });
+        .cookie("token", token, cookieOptions)
+        .json({ user: { id: userId, name: userFullName, email: email } });
     }
 
     return res
@@ -205,11 +216,22 @@ authRouter.post("/auth/login", async (req, res) => {
  *                   example: Unknown Internal Error
  */
 authRouter.post("/auth/logout", (req, res) => {
-  res.clearCookie("token", {
+  // Configure cookie clearing based on environment
+  const cookieOptions: any = {
     httpOnly: true,
-    secure: serverConfig.cookieSecurity,
-    sameSite: serverConfig.cookieSameSite,
-  });
+    path: "/",
+  };
+
+  // For development, use lax sameSite and don't set secure
+  if (serverConfig.node_env === "development") {
+    cookieOptions.sameSite = "lax";
+    cookieOptions.secure = false;
+  } else {
+    cookieOptions.sameSite = serverConfig.cookieSameSite;
+    cookieOptions.secure = serverConfig.cookieSecurity;
+  }
+
+  res.clearCookie("token", cookieOptions);
 
   return res.status(200).json({ message: "Logged out successfully." });
 });
@@ -289,15 +311,26 @@ authRouter.get("/auth/check", async (req, res) => {
     }
 
     const user = await passwordHashAdapter.decodeToken<AuthUserDto>(token);
+
+    // Configure cookie based on environment
+    const cookieOptions: any = {
+      httpOnly: true,
+      secure: serverConfig.cookieSecurity,
+      maxAge: 2 * 60 * 60 * 1000, // 2 hours
+      path: "/", // Ensure cookie is available for all paths
+    };
+
+    // For development, use lax sameSite and don't set secure
+    if (serverConfig.node_env === "development") {
+      cookieOptions.sameSite = "lax";
+      cookieOptions.secure = false;
+    } else {
+      cookieOptions.sameSite = serverConfig.cookieSameSite;
+      cookieOptions.secure = serverConfig.cookieSecurity;
+    }
+
     return res
-      .cookie("token", token, {
-        httpOnly: true,
-        secure: serverConfig.cookieSecurity,
-        sameSite: serverConfig.cookieSameSite,
-        maxAge: 2 * 60 * 60 * 1000, // 2 hours
-        path: "/", // Ensure cookie is available for all paths
-        // Don't set domain in development to allow cross-port cookie sharing
-      })
+      .cookie("token", token, cookieOptions)
       .json({ user: { id: user?.id, name: user?.name } });
   } catch (err) {
     const response = unauthorizedHttpError(new UnauthorizedError());

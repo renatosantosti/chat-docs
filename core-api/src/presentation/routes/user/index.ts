@@ -372,8 +372,8 @@ userRouters.put(
  *                 error:
  *                   type: string
  *                   example: "Unauthorized Access"
- *       403:
- *         description: Access forbidden - The user does not have permission to access the documents
+ *       404:
+ *         description: Not Found - The requested resource does not exist
  *         content:
  *           application/json:
  *             schema:
@@ -381,10 +381,10 @@ userRouters.put(
  *               properties:
  *                 statusCode:
  *                   type: integer
- *                   example: 403
+ *                   example: 404
  *                 error:
  *                   type: string
- *                   example: "Access forbidden"
+ *                   example: "Not Found"
  *       500:
  *         description: Internal server error - An unknown error occurred
  *         content:
@@ -399,8 +399,19 @@ userRouters.put(
  *                   type: string
  *                   example: "Internal server error"
  */
-userRouters.post("/users/", async (req, res) => {
+userRouters.post("/users", async (req, res) => {
   try {
+    // Validate required fields
+    const { name, email, password, repeatedPassword } = req.body;
+
+    if (!name || !email || !password || !repeatedPassword) {
+      return res.status(HttpStatusCode.BAD_REQUEST).send({
+        statusCode: HttpStatusCode.BAD_REQUEST,
+        error:
+          "Missing required fields: name, email, password, and repeatedPassword are required",
+      });
+    }
+
     const controller = container.resolve(
       "CreateUserController",
     ) as CreateUserController;
@@ -420,7 +431,7 @@ userRouters.post("/users/", async (req, res) => {
   } catch (err: any) {
     // Handle unknown errors and log them with additional context
     console.error("Unknown Internal Error", {
-      details: { method: "POST", route: "/users/", error: { ...err } },
+      details: { method: "POST", route: "/users", error: { ...err } },
     });
 
     return res

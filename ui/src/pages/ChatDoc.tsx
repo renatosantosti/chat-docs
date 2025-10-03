@@ -8,6 +8,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { askQuestion, chatRequest, ChatState } from "@/store/chat/slices";
 import { ChatMode } from "@/shared/types";
 import { DocumentState } from "@/store/document/slices";
+import { AuthState } from "@/store/auth/slices";
 import { useNavigate, useParams } from "react-router-dom";
 import Loading from "@/components/Loading";
 
@@ -18,6 +19,7 @@ const ChatDoc = () => {
   const docState = useSelector(
     (store: { document: DocumentState }) => store.document,
   );
+  const authState = useSelector((store: { auth: AuthState }) => store.auth);
   const { id } = useParams<{ id: string }>();
   const { isLoading, filtered, response } = state;
   const limitText = 1130;
@@ -28,6 +30,30 @@ const ChatDoc = () => {
   const [mode, setMode] = useState<ChatMode>("chat");
   const [searchTerm, setSearchTerm] = useState("");
   const [showTermHistory, setShowTermHistory] = useState(true);
+
+  // Helper function to get the appropriate response based on user
+  const getResponseText = () => {
+    const personalizedMessage = `Hi guys, I will leverage this moment to speak a little bit about me...well as you know I am Renato Santos. 
+    During my career, I worked in different industries and with different approaches to solving problems. So, I am flexible, innovative, and fast-paced to learn new things. 
+    I feel free to explore new things and jump to another new technology whenever it is needed or I will explore it.
+    I THINK SOLUTION IS MORE THAN TECHNOLOGIES - SO TECH IS TOOLS TO BE USED AND COMBINED TO ACHIEVE A SMART SOLUTION.
+    Be an expert is good, I am an expert whenever I have been working for a long time with certain stuff, but I am always ready to explore new things, that´s my spirit. Sorry to stop your flow! 
+    Go ahead, ask something to the doc!`;
+
+    const defaultMessage =
+      "Hello! I'm here to help you with your document. Ask me anything about it!";
+
+    // Show personalized message only for specific users
+    if (
+      authState.user &&
+      (authState.user.email === "demo@demo.com" ||
+        authState.user.email === "admin@admin.com")
+    ) {
+      return personalizedMessage;
+    }
+
+    return defaultMessage;
+  };
 
   const result = state.results.filter((r) => r.documentId == documentId);
   const hasResults = result.length > 0;
@@ -148,7 +174,7 @@ const ChatDoc = () => {
           <p className="text-sm text-gray-800">
             <Typewriter
               key={response}
-              words={[response]}
+              words={[response || getResponseText()]}
               loop={1}
               typeSpeed={25}
               cursor

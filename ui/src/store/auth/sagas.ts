@@ -21,6 +21,7 @@ function* handleLogin() {
       }
       try {
         const res = yield call(http.post, "/auth/login", action.payload);
+        console.log("user", res.data.user);
         yield put(loginSuccess(res.data.user));
       } catch (err) {
         yield put(

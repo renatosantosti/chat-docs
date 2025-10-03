@@ -83,6 +83,7 @@ export default class AuthUseCase implements IAuthUseCase {
         token,
         userId: user.id!,
         userFullName: user.name,
+        email: user.email,
       };
     }
 
