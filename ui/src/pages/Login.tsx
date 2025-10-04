@@ -17,7 +17,7 @@ const Login = () => {
 
   useEffect(() => {
     if (isAuthenticated) {
-      navigate("/documents");
+      navigate("/dashboard");
     }
   }, [isAuthenticated, navigate, error]);
 

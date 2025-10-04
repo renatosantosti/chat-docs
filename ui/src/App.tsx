@@ -14,13 +14,13 @@ import Login from "./pages/Login";
 import Signup from "./pages/Signup";
 import NotFound from "./pages/NotFound";
 import Documents from "./pages/Documents";
+import ModernDocuments from "./pages/ModernDocuments";
+import Dashboard from "./pages/Dashboard";
 import UploadDocument from "./pages/UploadDocument";
 import Navbar from "./components/Navbar";
 import NavbarAuth from "./components/NavbarAuth";
+import ProtectedRoute from "./components/ProtectedRoute";
 import ChatDoc from "./pages/ChatDoc";
-import { useDispatch } from "react-redux";
-import { useEffect } from "react";
-import { checkAuthRequest } from "./store/auth/slices";
 import DocumentSearch from "./pages/DocumentSearch";
 import ToastContainer from "./components/ToastContainer";
 
@@ -42,31 +42,11 @@ const PublicRoute = ({ element }: { element: React.ReactNode }) => (
   </>
 );
 
-// Component to handle auth check only for protected routes
-const AuthChecker = () => {
-  const dispatch = useDispatch();
-  const location = useLocation();
-
-  useEffect(() => {
-    // Define public routes that don't require authentication
-    const publicRoutes = ["/", "/login", "/signup"];
-    const currentPath = location.pathname;
-
-    // Only check auth for protected routes
-    if (!publicRoutes.includes(currentPath)) {
-      dispatch(checkAuthRequest());
-    }
-  }, [location.pathname, dispatch]);
-
-  return null; // This component doesn't render anything
-};
-
 const App = () => {
   return (
     <QueryClientProvider client={queryClient}>
       <TooltipProvider>
         <BrowserRouter>
-          <AuthChecker />
           <Toaster />
           <ToastContainer />
           <Sonner />
@@ -84,12 +64,24 @@ const App = () => {
 
             {/* Authenticated routes with auth navbar */}
             <Route
+              path="/dashboard"
+              element={
+                <ProtectedRoute>
+                  <AuthenticatedRoute element={<Dashboard />} />
+                </ProtectedRoute>
+              }
+            />
+            <Route
               path="/documents"
               element={<AuthenticatedRoute element={<Documents />} />}
             />
             <Route
-              path="/upload-document"
-              element={<AuthenticatedRoute element={<UploadDocument />} />}
+              path="/documents-modern"
+              element={
+                <ProtectedRoute>
+                  <AuthenticatedRoute element={<ModernDocuments />} />
+                </ProtectedRoute>
+              }
             />
             <Route
               path="/upload-document"

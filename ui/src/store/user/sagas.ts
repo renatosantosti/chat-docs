@@ -33,7 +33,7 @@ function* handleCreateUser() {
           yield put(loginRequest({ email, password }));
 
           // Force redirect
-          window.location.href = "/documents";
+          window.location.href = "/dashboard";
         }
       } catch (err: any) {
         // Extract error message

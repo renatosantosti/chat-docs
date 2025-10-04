@@ -94,7 +94,7 @@ const ChatDoc = () => {
       isNaN(parseInt(id, 10)) ||
       docState.documents.filter((doc) => doc.id == documentId).length === 0
     ) {
-      navigate("/documents");
+      navigate("/dashboard");
     }
   }, [id, navigate, docState]);
 

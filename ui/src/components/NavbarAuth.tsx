@@ -37,7 +37,7 @@ const NavbarAuth = () => {
         <div className="flex justify-between h-16">
           <div className="flex items-center space-x-8">
             {/* Logo */}
-            <Link to="/documents" className="flex-shrink-0 flex items-center">
+            <Link to="/dashboard" className="flex-shrink-0 flex items-center">
               <span className="text-2xl font-bold gradient-text">
                 Chat Doc!
               </span>
@@ -51,7 +51,7 @@ const NavbarAuth = () => {
                     asChild
                     className={navigationMenuTriggerStyle()}
                   >
-                    <Link to="/documents" className="flex items-center">
+                    <Link to="/documents-modern" className="flex items-center">
                       <FileText className="mr-2 h-4 w-4" />
                       <span>My Documents</span>
                     </Link>
