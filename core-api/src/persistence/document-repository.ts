@@ -50,9 +50,25 @@ export default class DocumentRepository implements IDocumentRepository {
   }
 
   async getOneById(documentId: number): Promise<Document | null> {
+    console.log(
+      "DocumentRepository.getOneById - Searching for document ID:",
+      documentId,
+    );
     const result = await DbContext.Documents.findOne({
-      where: { id: documentId },
+      where: { id: documentId, isActive: true },
     });
+    console.log(
+      "DocumentRepository.getOneById - Found document:",
+      result ? "Yes" : "No",
+    );
+    if (result) {
+      console.log("DocumentRepository.getOneById - Document details:", {
+        id: result.id,
+        title: result.title,
+        userId: result.userId,
+        isActive: result.isActive,
+      });
+    }
     return result ? this.mapper.mapReverse(result) : null;
   }
 

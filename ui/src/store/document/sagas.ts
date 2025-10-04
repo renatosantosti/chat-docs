@@ -23,7 +23,12 @@ function* handleDocumentList() {
 
     try {
       const res = yield call(http.get, "/documents");
-      if (res.statusCode !== 200 && res.data.success) {
+      console.log("Document list response:", res);
+      console.log("Document list response data:", res.data);
+      console.log("Document list response data.data:", res.data.data);
+
+      // A resposta tem estrutura: res.data = {description, statusCode, data: {success, message, documents}}
+      if (res.data.statusCode !== 200 || !res.data.data.success) {
         yield put(documentListFailure());
         return;
       }
@@ -36,6 +41,11 @@ function* handleDocumentList() {
         pages: doc.numPages,
         type: "PDF",
       }));
+
+      console.log(
+        "Loaded documents:",
+        docs.map((d) => ({ id: d.id, title: d.title })),
+      );
 
       // force loading at least 1,5 seconds
       yield delay(700);
@@ -73,10 +83,13 @@ function* handleDocumentSearch() {
           http.get,
           `/documents/search?term=${action.payload}`,
         );
+        console.log("Search response:", res);
+        console.log("Search response data:", res.data);
+
         yield put(
           documentSearchSuccess({
             term: action.payload,
-            documents: res.data,
+            documents: res.data.data || res.data,
           }),
         );
       } catch (err) {
@@ -109,9 +122,51 @@ function* handleDeletionDocument() {
         return;
       }
       try {
+        console.log("Attempting to delete document with ID:", action.payload);
         const res = yield call(http.delete, `/documents/${action.payload}`);
-        yield put(documentDeletionSuccess(res.data.user));
+        console.log("Delete response:", res);
+        console.log("Delete response data:", res.data);
+        console.log("Delete response statusCode:", res.data.statusCode);
+
+        // A resposta tem estrutura: res.data = {description, statusCode, data: {success, message}}
+        if (res.data.statusCode !== 200 || !res.data.data.success) {
+          yield put(
+            addToast({
+              id: Date.now().toString(),
+              title: "Error",
+              description: "Failed to delete document. Please try again.",
+              type: "error",
+            }),
+          );
+          yield put(documentDeletionFailure());
+          return;
+        }
+
+        yield put(
+          addToast({
+            id: Date.now().toString(),
+            title: "Success",
+            description: "Document deleted successfully.",
+            type: "success",
+          }),
+        );
+        yield put(documentDeletionSuccess(action.payload));
       } catch (err) {
+        // Extract detailed error message from HTTP response
+        const errorMessage =
+          err.response?.data?.data?.message ||
+          err.message ||
+          "Failed to delete document. Please try again.";
+
+        console.error("Delete Document Error:", err);
+        yield put(
+          addToast({
+            id: Date.now().toString(),
+            title: "Error",
+            description: errorMessage,
+            type: "error",
+          }),
+        );
         yield put(documentDeletionFailure());
       }
     },

@@ -41,6 +41,13 @@ export default class DeleteDocumentController
         }),
       });
 
+      console.log("DeleteDocumentController - Request:", request);
+      console.log(
+        "DeleteDocumentController - Request ID type:",
+        typeof request.id,
+      );
+      console.log("DeleteDocumentController - Request ID value:", request.id);
+
       // Do a request validation
       const { error } = requestValidationSchema.validate(request);
       if (error) {

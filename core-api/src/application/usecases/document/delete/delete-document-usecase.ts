@@ -51,9 +51,25 @@ export default class DeleteDocumentUseCase implements IDeleteDocumentUseCase {
 
     let document = null;
     try {
+      console.log(
+        "Fetching document with ID:",
+        request.id,
+        "for user:",
+        currentUser.id,
+      );
       // Fetch the document by ID
       document = await this.repository.getOneById(request.id);
+      console.log("Document found:", document ? "Yes" : "No");
+      if (document) {
+        console.log(
+          "Document userId:",
+          document.userId,
+          "Current user ID:",
+          currentUser.id,
+        );
+      }
       if (!document) {
+        console.log("Document not found, returning NotFoundError");
         return new NotFoundError();
       }
     } catch (error) {

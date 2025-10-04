@@ -5,7 +5,12 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { FileTextIcon, ChevronRight, MessageSquareText } from "lucide-react";
+import {
+  FileTextIcon,
+  ChevronRight,
+  MessageSquareText,
+  Trash2,
+} from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
   Pagination,
@@ -16,8 +21,21 @@ import {
   PaginationNext,
   PaginationPrevious,
 } from "@/components/ui/pagination";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@/components/ui/alert-dialog";
 import { useNavigate } from "react-router-dom";
 import { DocumentItem } from "@/shared/models";
+import { useDispatch } from "react-redux";
+import { documentDeletionRequest } from "@/store/document/slices";
 
 interface DocumentGridProps {
   documents: DocumentItem[];
@@ -33,6 +51,7 @@ const DocumentGrid = ({
   onPageChange,
 }: DocumentGridProps) => {
   const navigate = useNavigate();
+  const dispatch = useDispatch();
   const formatDate = (dateString: string) => {
     const date = new Date(dateString);
     return date.toLocaleDateString("en-US", {
@@ -40,6 +59,16 @@ const DocumentGrid = ({
       month: "short",
       day: "numeric",
     });
+  };
+
+  const handleDeleteDocument = (documentId: number) => {
+    console.log(
+      "handleDeleteDocument called with ID:",
+      documentId,
+      "Type:",
+      typeof documentId,
+    );
+    dispatch(documentDeletionRequest(documentId));
   };
 
   // Generate pagination items
@@ -146,7 +175,7 @@ const DocumentGrid = ({
                     {formatDate(doc.date)}
                   </div>
                 </CardContent>
-                <CardFooter>
+                <CardFooter className="flex flex-col space-y-2">
                   <Button
                     variant="ghost"
                     className="w-full text-indigo-600 hover:text-indigo-700 hover:bg-indigo-50"
@@ -156,6 +185,38 @@ const DocumentGrid = ({
                     Chat this Doc!
                     <ChevronRight className="h-4 w-4 ml-2" />
                   </Button>
+
+                  <AlertDialog>
+                    <AlertDialogTrigger asChild>
+                      <Button
+                        variant="ghost"
+                        size="sm"
+                        className="w-full text-red-600 hover:text-red-700 hover:bg-red-50"
+                      >
+                        <Trash2 className="h-4 w-4 mr-2" />
+                        Delete
+                      </Button>
+                    </AlertDialogTrigger>
+                    <AlertDialogContent>
+                      <AlertDialogHeader>
+                        <AlertDialogTitle>Are you sure?</AlertDialogTitle>
+                        <AlertDialogDescription>
+                          This action cannot be undone. This will permanently
+                          delete the document "{doc.title}" and remove it from
+                          our servers.
+                        </AlertDialogDescription>
+                      </AlertDialogHeader>
+                      <AlertDialogFooter>
+                        <AlertDialogCancel>Cancel</AlertDialogCancel>
+                        <AlertDialogAction
+                          onClick={() => handleDeleteDocument(doc.id)}
+                          className="bg-red-600 hover:bg-red-700"
+                        >
+                          Delete
+                        </AlertDialogAction>
+                      </AlertDialogFooter>
+                    </AlertDialogContent>
+                  </AlertDialog>
                 </CardFooter>
               </Card>
             ))}

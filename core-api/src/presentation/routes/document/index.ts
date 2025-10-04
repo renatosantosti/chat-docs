@@ -405,6 +405,10 @@ documentRouters.delete(
   onlyWithAccessAuthMiddleware,
   async (req, res) => {
     try {
+      console.log("DELETE /documents/:id - Params:", req.params);
+      console.log("DELETE /documents/:id - Current User:", req.currentUser);
+      console.log("DELETE /documents/:id - Parsed ID:", Number(req.params.id));
+
       // Resolve the use case and controller from the container
       const controller = container.resolve(
         "DeleteDocumentController",
