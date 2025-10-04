@@ -108,14 +108,6 @@ const AdvancedSearch: React.FC<AdvancedSearchProps> = ({
           alignItems="center"
         >
           <Stack direction="row" spacing={1} alignItems="center">
-            {totalResults !== undefined && (
-              <Chip
-                label={`${totalResults} results`}
-                size="small"
-                color="primary"
-                variant="outlined"
-              />
-            )}
             {searchTerm && (
               <Chip
                 label={`"${searchTerm}"`}

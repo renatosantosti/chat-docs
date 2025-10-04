@@ -1,11 +1,9 @@
 import React from "react";
-import { Box, Typography, Stack, Button, Paper, Chip } from "@mui/material";
+import { Box, Typography, Stack, Button } from "@mui/material";
 import {
   Dashboard as DashboardIcon,
   Description as DocumentsIcon,
   CloudUpload as UploadIcon,
-  SmartToy as AIIcon,
-  TrendingUp as AnalyticsIcon,
 } from "@mui/icons-material";
 import { useNavigate } from "react-router-dom";
 
@@ -47,22 +45,25 @@ const DashboardNavigation: React.FC<DashboardNavigationProps> = ({
   };
 
   return (
-    <Paper
-      elevation={1}
-      sx={{
-        p: 3,
-        borderRadius: 2,
-        backgroundColor: "grey.50",
-        border: "1px solid",
-        borderColor: "grey.200",
-        mb: 3,
-      }}
-    >
-      <Typography variant="h6" sx={{ mb: 2, fontWeight: 600 }}>
+    <Box sx={{ mb: 4, textAlign: "center" }}>
+      <Typography
+        variant="h5"
+        sx={{
+          mb: 3,
+          fontWeight: 600,
+          color: "#6b21a8",
+        }}
+      >
         Quick Navigation
       </Typography>
 
-      <Stack direction="row" spacing={2} flexWrap="wrap" useFlexGap>
+      <Stack
+        direction="row"
+        spacing={3}
+        flexWrap="wrap"
+        useFlexGap
+        justifyContent="center"
+      >
         {navigationItems.map((item) => {
           const isActive = currentPath === item.path;
 
@@ -73,42 +74,36 @@ const DashboardNavigation: React.FC<DashboardNavigationProps> = ({
               startIcon={item.icon}
               onClick={() => handleNavigation(item.path)}
               sx={{
-                minWidth: 140,
-                justifyContent: "flex-start",
+                minWidth: 160,
+                py: 1.5,
+                px: 3,
+                borderRadius: 2,
+                textTransform: "none",
+                fontWeight: 500,
                 ...(isActive && {
                   background:
-                    "linear-gradient(135deg, #667eea 0%, #764ba2 100%)",
+                    "linear-gradient(135deg, #9333ea 0%, #0284c7 100%)",
                   "&:hover": {
                     background:
-                      "linear-gradient(135deg, #5a6fd8 0%, #6a4190 100%)",
+                      "linear-gradient(135deg, #7c3aed 0%, #0369a1 100%)",
                   },
                 }),
                 ...(!isActive && {
-                  borderColor: "#667eea",
-                  color: "#667eea",
+                  borderColor: "#9333ea",
+                  color: "#9333ea",
                   "&:hover": {
-                    borderColor: "#5a6fd8",
-                    backgroundColor: "#667eea05",
+                    borderColor: "#7c3aed",
+                    backgroundColor: "#f3e8ff",
                   },
                 }),
               }}
             >
-              <Box sx={{ textAlign: "left" }}>
-                <Typography variant="subtitle2" sx={{ fontWeight: 500 }}>
-                  {item.label}
-                </Typography>
-                <Typography
-                  variant="caption"
-                  sx={{ opacity: 0.8, display: "block" }}
-                >
-                  {item.description}
-                </Typography>
-              </Box>
+              {item.label}
             </Button>
           );
         })}
       </Stack>
-    </Paper>
+    </Box>
   );
 };
 

@@ -1,20 +1,8 @@
 import { createTheme } from "@mui/material/styles";
 
-// Cores do design system
+// Cores do design system baseadas na página principal
 const colors = {
   primary: {
-    50: "#f0f9ff",
-    100: "#e0f2fe",
-    200: "#bae6fd",
-    300: "#7dd3fc",
-    400: "#38bdf8",
-    500: "#0ea5e9",
-    600: "#0284c7",
-    700: "#0369a1",
-    800: "#075985",
-    900: "#0c4a6e",
-  },
-  secondary: {
     50: "#faf5ff",
     100: "#f3e8ff",
     200: "#e9d5ff",
@@ -25,6 +13,18 @@ const colors = {
     700: "#7c3aed",
     800: "#6b21a8",
     900: "#581c87",
+  },
+  secondary: {
+    50: "#f0f9ff",
+    100: "#e0f2fe",
+    200: "#bae6fd",
+    300: "#7dd3fc",
+    400: "#38bdf8",
+    500: "#0ea5e9",
+    600: "#0284c7",
+    700: "#0369a1",
+    800: "#075985",
+    900: "#0c4a6e",
   },
   success: {
     50: "#f0fdf4",
@@ -59,13 +59,13 @@ export const muiTheme = createTheme({
   palette: {
     mode: "light",
     primary: {
-      main: colors.primary[600],
+      main: colors.primary[600], // Roxo principal
       light: colors.primary[400],
       dark: colors.primary[800],
       contrastText: "#ffffff",
     },
     secondary: {
-      main: colors.secondary[600],
+      main: colors.secondary[600], // Azul secundário
       light: colors.secondary[400],
       dark: colors.secondary[800],
       contrastText: "#ffffff",

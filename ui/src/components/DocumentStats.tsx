@@ -1,6 +1,5 @@
 import React from "react";
 import {
-  Grid,
   Paper,
   Typography,
   Box,
@@ -11,8 +10,6 @@ import {
 import {
   Description as DocIcon,
   TrendingUp as TrendingIcon,
-  SmartToy as AIIcon,
-  Schedule as ScheduleIcon,
   Storage as StorageIcon,
 } from "@mui/icons-material";
 import { DocumentItem } from "@/shared/models";
@@ -68,41 +65,54 @@ const DocumentStats: React.FC<DocumentStatsProps> = ({ documents }) => {
       trend: "-2%",
       description: "Average document size",
     },
-    {
-      title: "Recent Uploads",
-      value: recentDocuments,
-      icon: <ScheduleIcon />,
-      color: "#4facfe",
-      trend: "+25%",
-      description: "Last 7 days",
-    },
   ];
 
   return (
     <Box sx={{ mb: 4 }}>
-      <Typography variant="h5" sx={{ mb: 3, fontWeight: 600 }}>
-        Document Intelligence Dashboard
+      <Typography
+        variant="h4"
+        sx={{
+          mb: 4,
+          fontWeight: 700,
+          color: "#6b21a8",
+          textAlign: "center",
+        }}
+      >
+        Document Overview
       </Typography>
 
-      <Grid container spacing={3}>
+      <Box
+        sx={{
+          display: "flex",
+          flexWrap: "wrap",
+          gap: 3,
+          justifyContent: "center",
+          maxWidth: "1200px",
+          margin: "0 auto",
+        }}
+      >
         {/* Main Stats */}
         {stats.map((stat, index) => (
-          <Grid item xs={12} sm={6} md={3} key={index}>
+          <Box
+            key={index}
+            sx={{ flex: "1 1 280px", minWidth: "280px", maxWidth: "350px" }}
+          >
             <Paper
-              elevation={1}
+              elevation={0}
               sx={{
                 p: 3,
-                borderRadius: 2,
-                background: `linear-gradient(135deg, ${stat.color}15 0%, ${stat.color}05 100%)`,
-                border: `1px solid ${stat.color}20`,
+                borderRadius: 3,
+                backgroundColor: "#ffffff",
+                border: "1px solid #e5e7eb",
                 transition: "all 0.3s ease-in-out",
                 "&:hover": {
-                  transform: "translateY(-2px)",
-                  boxShadow: "0 8px 25px rgba(0, 0, 0, 0.1)",
+                  transform: "translateY(-4px)",
+                  boxShadow: "0 20px 40px rgba(0, 0, 0, 0.1)",
+                  borderColor: "#9333ea",
                 },
               }}
             >
-              <Stack spacing={2}>
+              <Stack spacing={2.5}>
                 <Stack
                   direction="row"
                   justifyContent="space-between"
@@ -110,10 +120,10 @@ const DocumentStats: React.FC<DocumentStatsProps> = ({ documents }) => {
                 >
                   <Box
                     sx={{
-                      p: 1.5,
+                      p: 2,
                       borderRadius: 2,
-                      backgroundColor: stat.color,
-                      color: "white",
+                      backgroundColor: "#f3e8ff",
+                      color: "#9333ea",
                       display: "flex",
                       alignItems: "center",
                       justifyContent: "center",
@@ -124,237 +134,54 @@ const DocumentStats: React.FC<DocumentStatsProps> = ({ documents }) => {
                   <Chip
                     label={stat.trend}
                     size="small"
-                    color={stat.trend.startsWith("+") ? "success" : "error"}
-                    variant="outlined"
-                    sx={{ fontWeight: 500 }}
+                    sx={{
+                      backgroundColor: "#22c55e",
+                      color: "white",
+                      fontWeight: 600,
+                      fontSize: "0.75rem",
+                    }}
                   />
                 </Stack>
 
                 <Box>
-                  <Typography variant="h4" sx={{ fontWeight: 700, mb: 0.5 }}>
+                  <Typography
+                    variant="h3"
+                    sx={{
+                      fontWeight: 700,
+                      mb: 1,
+                      color: "#1f2937",
+                      fontSize: "2.5rem",
+                    }}
+                  >
                     {stat.value.toLocaleString()}
                   </Typography>
-                  <Typography variant="body2" color="text.secondary">
+                  <Typography
+                    variant="body1"
+                    sx={{
+                      color: "#6b7280",
+                      fontSize: "0.95rem",
+                      fontWeight: 500,
+                    }}
+                  >
                     {stat.title}
                   </Typography>
                   <Typography
-                    variant="caption"
-                    color="text.secondary"
-                    sx={{ mt: 1, display: "block" }}
+                    variant="body2"
+                    sx={{
+                      mt: 1,
+                      display: "block",
+                      color: "#9ca3af",
+                      fontSize: "0.85rem",
+                    }}
                   >
                     {stat.description}
                   </Typography>
                 </Box>
               </Stack>
             </Paper>
-          </Grid>
+          </Box>
         ))}
-
-        {/* Document Types Distribution */}
-        <Grid item xs={12} md={6}>
-          <Paper
-            elevation={1}
-            sx={{
-              p: 3,
-              borderRadius: 2,
-              height: "100%",
-            }}
-          >
-            <Typography variant="h6" sx={{ mb: 2, fontWeight: 600 }}>
-              Document Types
-            </Typography>
-            <Stack spacing={2}>
-              {Object.entries(typeDistribution).map(([type, count]) => {
-                const percentage =
-                  totalDocuments > 0 ? (count / totalDocuments) * 100 : 0;
-                const colors = {
-                  PDF: "#e53e3e",
-                  DOC: "#2b6cb0",
-                  TXT: "#4a5568",
-                  IMAGE: "#38a169",
-                };
-
-                return (
-                  <Box key={type}>
-                    <Stack
-                      direction="row"
-                      justifyContent="space-between"
-                      alignItems="center"
-                      sx={{ mb: 1 }}
-                    >
-                      <Stack direction="row" spacing={1} alignItems="center">
-                        <Chip
-                          label={type}
-                          size="small"
-                          sx={{
-                            backgroundColor: `${colors[type as keyof typeof colors] || "#718096"}20`,
-                            color:
-                              colors[type as keyof typeof colors] || "#718096",
-                            fontWeight: 500,
-                          }}
-                        />
-                        <Typography variant="body2" color="text.secondary">
-                          {count} documents
-                        </Typography>
-                      </Stack>
-                      <Typography variant="body2" fontWeight={500}>
-                        {percentage.toFixed(1)}%
-                      </Typography>
-                    </Stack>
-                    <LinearProgress
-                      variant="determinate"
-                      value={percentage}
-                      sx={{
-                        height: 6,
-                        borderRadius: 3,
-                        backgroundColor: "grey.200",
-                        "& .MuiLinearProgress-bar": {
-                          backgroundColor:
-                            colors[type as keyof typeof colors] || "#718096",
-                          borderRadius: 3,
-                        },
-                      }}
-                    />
-                  </Box>
-                );
-              })}
-            </Stack>
-          </Paper>
-        </Grid>
-
-        {/* AI Processing Status */}
-        <Grid item xs={12} md={6}>
-          <Paper
-            elevation={1}
-            sx={{
-              p: 3,
-              borderRadius: 2,
-              height: "100%",
-              background:
-                "linear-gradient(135deg, #667eea15 0%, #764ba205 100%)",
-              border: "1px solid #667eea20",
-            }}
-          >
-            <Stack spacing={2}>
-              <Stack direction="row" alignItems="center" spacing={2}>
-                <Box
-                  sx={{
-                    p: 1.5,
-                    borderRadius: 2,
-                    backgroundColor: "#667eea",
-                    color: "white",
-                    display: "flex",
-                    alignItems: "center",
-                    justifyContent: "center",
-                  }}
-                >
-                  <AIIcon />
-                </Box>
-                <Box>
-                  <Typography variant="h6" sx={{ fontWeight: 600 }}>
-                    AI Processing Status
-                  </Typography>
-                  <Typography variant="body2" color="text.secondary">
-                    All documents are AI-ready
-                  </Typography>
-                </Box>
-              </Stack>
-
-              <Stack spacing={2}>
-                <Box>
-                  <Stack
-                    direction="row"
-                    justifyContent="space-between"
-                    alignItems="center"
-                    sx={{ mb: 1 }}
-                  >
-                    <Typography variant="body2" color="text.secondary">
-                      Content Analysis
-                    </Typography>
-                    <Typography variant="body2" fontWeight={500}>
-                      100%
-                    </Typography>
-                  </Stack>
-                  <LinearProgress
-                    variant="determinate"
-                    value={100}
-                    sx={{
-                      height: 6,
-                      borderRadius: 3,
-                      backgroundColor: "grey.200",
-                      "& .MuiLinearProgress-bar": {
-                        background:
-                          "linear-gradient(90deg, #667eea 0%, #764ba2 100%)",
-                        borderRadius: 3,
-                      },
-                    }}
-                  />
-                </Box>
-
-                <Box>
-                  <Stack
-                    direction="row"
-                    justifyContent="space-between"
-                    alignItems="center"
-                    sx={{ mb: 1 }}
-                  >
-                    <Typography variant="body2" color="text.secondary">
-                      Semantic Indexing
-                    </Typography>
-                    <Typography variant="body2" fontWeight={500}>
-                      100%
-                    </Typography>
-                  </Stack>
-                  <LinearProgress
-                    variant="determinate"
-                    value={100}
-                    sx={{
-                      height: 6,
-                      borderRadius: 3,
-                      backgroundColor: "grey.200",
-                      "& .MuiLinearProgress-bar": {
-                        background:
-                          "linear-gradient(90deg, #667eea 0%, #764ba2 100%)",
-                        borderRadius: 3,
-                      },
-                    }}
-                  />
-                </Box>
-
-                <Box>
-                  <Stack
-                    direction="row"
-                    justifyContent="space-between"
-                    alignItems="center"
-                    sx={{ mb: 1 }}
-                  >
-                    <Typography variant="body2" color="text.secondary">
-                      Chat Ready
-                    </Typography>
-                    <Typography variant="body2" fontWeight={500}>
-                      100%
-                    </Typography>
-                  </Stack>
-                  <LinearProgress
-                    variant="determinate"
-                    value={100}
-                    sx={{
-                      height: 6,
-                      borderRadius: 3,
-                      backgroundColor: "grey.200",
-                      "& .MuiLinearProgress-bar": {
-                        background:
-                          "linear-gradient(90deg, #667eea 0%, #764ba2 100%)",
-                        borderRadius: 3,
-                      },
-                    }}
-                  />
-                </Box>
-              </Stack>
-            </Stack>
-          </Paper>
-        </Grid>
-      </Grid>
+      </Box>
     </Box>
   );
 };
