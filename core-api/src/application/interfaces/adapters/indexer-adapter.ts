@@ -35,4 +35,15 @@ export interface IIndexerAdapter {
    * @returns A promise resolving when the indexing operation is complete.
    */
   indexContent(indexName: string, page: IndexedDocumentDto): Promise<void>;
+
+  /**
+   * Deletes all indexed content for a specific document from Elasticsearch.
+   * @param indexName - The index name
+   * @param documentId - The ID of the document to delete from the index
+   * @returns A promise resolving to true if deletion was successful, false otherwise
+   */
+  deleteDocumentContent(
+    indexName: string,
+    documentId: string,
+  ): Promise<boolean>;
 }

@@ -23,7 +23,6 @@ export class SearchIndexerService implements ISearchIndexerService {
         const page: IndexedDocumentDto = { ...pageItem, embedding };
 
         if (isNotError(embedding)) {
-          // const ommited = page as  Omit<DocumentTextPageDto, "Content">;
           await this.searchIndexer.indexContent(this.indexName, page);
         }
       }

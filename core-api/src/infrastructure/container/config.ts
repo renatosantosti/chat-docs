@@ -14,6 +14,7 @@ import { ISearchTermUseCase } from "@/application/interfaces/use-cases/search-us
 import { IUpdateUserUseCase } from "@/application/interfaces/use-cases/update-user-usecase-interface";
 import { ExtractDocumentTextPagesService } from "@/application/services/extract-document-text-pages-service";
 import { SearchIndexerService } from "@/application/services/indexer-pages-service";
+import { DeleteSearchIndexService } from "@/application/services/delete-search-index-service";
 import AuthUseCase from "@/application/usecases/auth/auth-usecase";
 import ChatDocUseCase from "@/application/usecases/chatdoc/chatdoc-usecase";
 import CreateDocumentUseCase from "@/application/usecases/document/create/create-document-usecase";
@@ -174,6 +175,10 @@ const searchIndexerService = new SearchIndexerService(
   openAiAdaptter,
   slasticSearchIndexer,
 );
+const deleteSearchIndexService = new DeleteSearchIndexService(
+  elasticSearchConfig.indexName,
+  slasticSearchIndexer,
+);
 
 //Finally, create all uses cases and register those instances
 const createDocumentUseCase = new CreateDocumentUseCase(
@@ -187,6 +192,7 @@ const deleteDocumentUseCase = new DeleteDocumentUseCase(
   timeProvider,
   documentRepository,
   documentMapper,
+  deleteSearchIndexService,
 );
 const getAllDocumentUseCase = new GetAllDocumentUseCase(
   timeProvider,

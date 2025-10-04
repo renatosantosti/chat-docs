@@ -10,6 +10,7 @@ import { AccessForbiddenError } from "@/shared/errors/access-forbidden-error";
 import { InternalError } from "@/shared/errors/internal-error";
 import { NotFoundError } from "@/shared/errors/not-found-error";
 import { IDeleteDocumentUseCase } from "@/application/interfaces/use-cases/document/delete/delete-document-usecase-interface";
+import { IDeleteSearchIndexService } from "@/application/interfaces/services/delete-search-index-service-interface";
 
 /**
  * Use case for creating a new document.
@@ -23,12 +24,15 @@ export default class DeleteDocumentUseCase implements IDeleteDocumentUseCase {
    *
    * @param currentUser - The currently authenticated user.
    * @param timeProvider - The time provider used for obtaining the current UTC datetime.
+   * @param repository - The document repository for database operations.
    * @param mapper - Helper to map document model to DTO.
+   * @param deleteSearchIndexService - Service to delete document content from search index.
    */
   constructor(
     readonly timeProvider: ITimeAdapter,
     readonly repository: IDocumentRepository,
     readonly mapper: IBaseMapper<Document, DocumentDto>,
+    readonly deleteSearchIndexService: IDeleteSearchIndexService,
   ) {}
 
   /**
@@ -50,7 +54,7 @@ export default class DeleteDocumentUseCase implements IDeleteDocumentUseCase {
       // Fetch the document by ID
       document = await this.repository.getOneById(request.id);
       if (!document) {
-        throw new NotFoundError();
+        return new NotFoundError();
       }
     } catch (error) {
       console.error("Error fetching document:", error);
@@ -63,13 +67,38 @@ export default class DeleteDocumentUseCase implements IDeleteDocumentUseCase {
     }
 
     try {
+      // First delete the document from the repository
       const result = await this.repository.deleteOneById(request.id);
 
+      if (!result) {
+        return {
+          success: false,
+          message: "Unknown error to delete document.",
+        };
+      }
+
+      // Then delete the document content from the search index
+      try {
+        const searchIndexDeleted = await this.deleteSearchIndexService.execute(
+          request.id.toString(),
+        );
+
+        if (!searchIndexDeleted) {
+          console.warn(
+            `Document ${request.id} was deleted from database but failed to delete from search index`,
+          );
+        }
+      } catch (searchIndexError) {
+        console.error(
+          `Error deleting document ${request.id} from search index:`,
+          searchIndexError,
+        );
+        // Don't fail the entire operation if search index deletion fails
+      }
+
       return {
-        success: !!result,
-        message: result
-          ? "User deleted successfully."
-          : "Unknow error to delete document.",
+        success: true,
+        message: "Document deleted successfully.",
       };
     } catch (err: any) {
       console.error("Error deleting document:", err);

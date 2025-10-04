@@ -177,6 +177,41 @@ export class SlasticSearchIndexer implements IIndexerAdapter {
     });
   }
 
+  /**
+   * Deletes all indexed content for a specific document from Elasticsearch.
+   * @param indexName - The index name
+   * @param documentId - The ID of the document to delete from the index
+   * @returns A promise resolving to true if deletion was successful, false otherwise
+   */
+  async deleteDocumentContent(
+    indexName: string,
+    documentId: string,
+  ): Promise<boolean> {
+    try {
+      const response = await this.client.deleteByQuery({
+        index: indexName,
+        body: {
+          query: {
+            term: {
+              documentId: documentId,
+            },
+          },
+        },
+      });
+
+      console.log(
+        `Deleted ${response.deleted} documents for documentId: ${documentId}`,
+      );
+      return true;
+    } catch (error) {
+      console.error(
+        `Error deleting document content for documentId ${documentId}:`,
+        error,
+      );
+      return false;
+    }
+  }
+
   async createIndexWithMapping(indexName: string, embeddingDims: number) {
     const mapping = {
       mappings: {
