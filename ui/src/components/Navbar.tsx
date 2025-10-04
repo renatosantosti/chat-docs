@@ -36,7 +36,7 @@ const Navbar = () => {
                   to="features" // The id of the target element
                   smooth={true} // Enables smooth scrolling
                   duration={500} // Duration of the scroll in milliseconds
-                  className="px-3 py-2 text-sm font-medium text-gray-700 hover:text-indigo-600"
+                  className="px-3 py-2 text-sm font-medium text-gray-700 hover:text-indigo-600 cursor-pointer focus:outline-none"
                 >
                   Features
                 </ScrollLink>
@@ -44,7 +44,7 @@ const Navbar = () => {
                   to="how-it-works" // The id of the target element
                   smooth={true} // Enables smooth scrolling
                   duration={500} // Duration of the scroll in milliseconds
-                  className="px-3 py-2 text-sm font-medium text-gray-700 hover:text-indigo-600"
+                  className="px-3 py-2 text-sm font-medium text-gray-700 hover:text-indigo-600 cursor-pointer focus:outline-none"
                 >
                   How It Works
                 </ScrollLink>
@@ -54,13 +54,13 @@ const Navbar = () => {
                 {" "}
                 <Link
                   to="/#features"
-                  className="px-3 py-2 text-sm font-medium text-gray-700 hover:text-indigo-600"
+                  className="px-3 py-2 text-sm font-medium text-gray-700 hover:text-indigo-600 cursor-pointer focus:outline-none"
                 >
                   Features
                 </Link>
                 <Link
                   to="/#how-it-works"
-                  className="px-3 py-2 text-sm font-medium text-gray-700 hover:text-indigo-600"
+                  className="px-3 py-2 text-sm font-medium text-gray-700 hover:text-indigo-600 cursor-pointer focus:outline-none"
                 >
                   How It Works
                 </Link>
