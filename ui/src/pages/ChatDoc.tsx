@@ -422,7 +422,7 @@ const ChatDoc = () => {
               />
 
               {/* Action Button */}
-              <Box sx={{ textAlign: "center" }}>
+              <Box sx={{ textAlign: "center", mb: 2 }}>
                 <Button
                   variant="contained"
                   onClick={handleChatSearchClick}
@@ -454,11 +454,13 @@ const ChatDoc = () => {
               sx={{
                 p: 3,
                 mb: 5,
+                mt: "17px",
                 backgroundColor: "#ffffff",
                 border: "1px solid #e5e7eb",
                 borderRadius: 2,
                 maxWidth: "900px",
-                margin: "0 auto",
+                marginLeft: "auto",
+                marginRight: "auto",
                 position: "relative",
               }}
             >

@@ -5,9 +5,7 @@ import {
   Stack,
   Pagination,
   Paper,
-  Chip,
   Skeleton,
-  Alert,
   Button,
 } from "@mui/material";
 import {
@@ -47,7 +45,6 @@ const ModernDocumentGrid: React.FC<ModernDocumentGridProps> = ({
   onShare,
   onEdit,
   isLoading = false,
-  viewMode = "grid",
   onRefresh,
   onUpload,
 }) => {
@@ -192,76 +189,8 @@ const ModernDocumentGrid: React.FC<ModernDocumentGridProps> = ({
     </Box>
   );
 
-  const renderDocumentStats = () => (
-    <Paper
-      elevation={0}
-      sx={{
-        p: 3,
-        mb: 4,
-        backgroundColor: "#ffffff",
-        border: "1px solid #e5e7eb",
-        borderRadius: 3,
-        maxWidth: "1200px",
-        margin: "0 auto",
-      }}
-    >
-      <Stack
-        direction="row"
-        spacing={3}
-        alignItems="center"
-        justifyContent="center"
-      >
-        <Stack direction="row" spacing={1} alignItems="center">
-          <Chip
-            icon={<DocIcon />}
-            label={`${documents.length} Documents`}
-            sx={{
-              backgroundColor: "#f3e8ff",
-              color: "#9333ea",
-              border: "1px solid #e9d5ff",
-              fontWeight: 500,
-            }}
-          />
-        </Stack>
-
-        <Stack direction="row" spacing={1} alignItems="center">
-          <Chip
-            label={`Page ${currentPage} of ${totalPages}`}
-            size="small"
-            sx={{
-              backgroundColor: "#f0f9ff",
-              color: "#0284c7",
-              border: "1px solid #bae6fd",
-              fontWeight: 500,
-            }}
-          />
-        </Stack>
-
-        {totalPages > 1 && (
-          <Stack direction="row" spacing={1} alignItems="center">
-            <Chip
-              label={`${Math.min(documents.length, 12)} per page`}
-              size="small"
-              sx={{
-                backgroundColor: "#f0fdf4",
-                color: "#16a34a",
-                border: "1px solid #bbf7d0",
-                fontWeight: 500,
-              }}
-            />
-          </Stack>
-        )}
-      </Stack>
-    </Paper>
-  );
-
   if (isLoading) {
-    return (
-      <Box>
-        {renderDocumentStats()}
-        {renderLoadingSkeletons()}
-      </Box>
-    );
+    return <Box>{renderLoadingSkeletons()}</Box>;
   }
 
   if (documents.length === 0) {
@@ -270,8 +199,6 @@ const ModernDocumentGrid: React.FC<ModernDocumentGridProps> = ({
 
   return (
     <Box>
-      {renderDocumentStats()}
-
       <Box
         sx={{
           display: "flex",
