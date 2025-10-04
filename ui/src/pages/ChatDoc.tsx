@@ -154,7 +154,7 @@ const ChatDoc = () => {
       >
         <Container maxWidth="xl" sx={{ py: 3 }}>
           {/* Header */}
-          <Box sx={{ textAlign: "center", mb: 4 }}>
+          <Box sx={{ textAlign: "center", mb: 5 }}>
             <Typography
               variant="h4"
               component="h1"
@@ -173,7 +173,7 @@ const ChatDoc = () => {
               elevation={0}
               sx={{
                 p: 2.5,
-                mb: 3,
+                mb: 5,
                 backgroundColor: "#ffffff",
                 border: "1px solid #e5e7eb",
                 borderRadius: 2,
@@ -296,7 +296,7 @@ const ChatDoc = () => {
                     px: 3,
                     py: 1,
                     borderRadius: 2,
-                    fontWeight: 30,
+                    fontWeight: 500,
                     fontSize: "0.95rem",
                   }}
                 >
@@ -311,7 +311,7 @@ const ChatDoc = () => {
             elevation={0}
             sx={{
               p: 3,
-              mb: 3,
+              mb: 5,
               backgroundColor: "#ffffff",
               border: "1px solid #e5e7eb",
               borderRadius: 2,
@@ -453,7 +453,7 @@ const ChatDoc = () => {
               elevation={0}
               sx={{
                 p: 3,
-                mb: 3,
+                mb: 5,
                 backgroundColor: "#ffffff",
                 border: "1px solid #e5e7eb",
                 borderRadius: 2,
@@ -513,7 +513,7 @@ const ChatDoc = () => {
               elevation={0}
               sx={{
                 p: 2.5,
-                mb: 3,
+                mb: 4,
                 backgroundColor: "#ffffff",
                 border: "1px solid #e5e7eb",
                 borderRadius: 2,
@@ -561,7 +561,7 @@ const ChatDoc = () => {
             <Paper
               elevation={0}
               sx={{
-                mb: 3,
+                mb: 5,
                 backgroundColor: "#ffffff",
                 border: "1px solid #e5e7eb",
                 borderRadius: 2,
@@ -708,7 +708,7 @@ const ChatDoc = () => {
                 elevation={0}
                 sx={{
                   p: 4,
-                  mb: 3,
+                  mb: 5,
                   backgroundColor: "#ffffff",
                   border: "1px solid #e5e7eb",
                   borderRadius: 2,
