@@ -78,7 +78,7 @@ export default class CreateDocumentUseCase implements ICreateDocumentUseCase {
       title: request.title,
       name: request.name,
       description: request.description,
-      content: request.content,
+      content: "", // no longer used to save content in the database
       type: request.type,
       url: "",
       pages: [],
@@ -122,6 +122,9 @@ export default class CreateDocumentUseCase implements ICreateDocumentUseCase {
 
         this.searchIndexerService.execute(formatedPages);
 
+        /**
+         * TODO: save file in external storage
+         */
         return {
           success: true,
           message: "Document created successfully.",

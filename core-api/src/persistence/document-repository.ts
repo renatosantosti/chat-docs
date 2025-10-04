@@ -33,7 +33,7 @@ export default class DocumentRepository implements IDocumentRepository {
         document as Omit<Document, "pages">,
         { transaction },
       );
-      const pageNumber = 1;
+
       const pages = document.pages.map((page) => {
         page.documentId = result.id;
         return page;
