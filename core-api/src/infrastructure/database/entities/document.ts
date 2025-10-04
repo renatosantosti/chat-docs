@@ -25,7 +25,7 @@ export default class DocumentEntity extends Model<Partial<DocumentEntity>> {
   name!: string;
   @Column(DataType.STRING)
   title!: string;
-  @Column(DataType.STRING)
+  @Column(DataType.TEXT)
   content?: string;
   @Column(DataType.STRING)
   description?: string;

@@ -232,6 +232,7 @@ describe("CreateDocumentUseCase", () => {
           numPages: 2,
           userId: mockCurrentUser.id,
           isActive: true,
+          createdBy: mockCurrentUser.email,
           createdOn: new Date("2023-01-01T00:00:00Z"),
         };
         const mockDocumentDto: DocumentDto = {
@@ -314,6 +315,7 @@ describe("CreateDocumentUseCase", () => {
           numPages: 0,
           userId: mockCurrentUser.id,
           isActive: true,
+          createdBy: mockCurrentUser.email,
           createdOn: new Date("2023-01-01T00:00:00Z"),
         };
         const mockDocumentDto: DocumentDto = {
@@ -398,6 +400,7 @@ describe("CreateDocumentUseCase", () => {
           content: validRequest.content,
           type: validRequest.type,
           url: "",
+          createdBy: mockCurrentUser.email,
           pages: [
             {
               documentId: 0,
@@ -475,6 +478,7 @@ describe("CreateDocumentUseCase", () => {
           numPages: 0,
           userId: mockCurrentUser.id,
           isActive: true,
+          createdBy: mockCurrentUser.email,
           createdOn: new Date("2023-01-01T00:00:00Z"),
         };
         const mockDocumentDto: DocumentDto = {
@@ -519,6 +523,7 @@ describe("CreateDocumentUseCase", () => {
           numPages: 1,
           userId: mockCurrentUser.id,
           isActive: true,
+          createdBy: mockCurrentUser.email,
           createdOn: new Date("2023-01-01T00:00:00Z"),
         };
         const mockDocumentDto: DocumentDto = {

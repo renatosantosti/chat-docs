@@ -10,8 +10,13 @@ import {
   Zoom,
   useScrollTrigger,
   Typography,
+  Button,
+  Stack,
 } from "@mui/material";
-import { KeyboardArrowUp as KeyboardArrowUpIcon } from "@mui/icons-material";
+import {
+  KeyboardArrowUp as KeyboardArrowUpIcon,
+  CloudUpload as CloudUploadIcon,
+} from "@mui/icons-material";
 import { useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { documentListRequest, DocumentState } from "@/store/document/slices";
@@ -120,8 +125,8 @@ const ModernDocuments: React.FC = () => {
   };
 
   const handleDelete = (documentId: number) => {
-    // This will be handled by the Redux saga
-    showNotification("Document deleted successfully", "success");
+    // This will be handled by the Redux saga and ModernDocumentCard
+    // No need to show notification here as it's handled by the saga
   };
 
   const handleView = (documentId: number) => {
@@ -202,6 +207,33 @@ const ModernDocuments: React.FC = () => {
               Manage and interact with your documents using AI-powered
               intelligence.
             </Typography>
+
+            {/* Upload Button */}
+            <Box sx={{ display: "flex", justifyContent: "flex-end", mb: 4 }}>
+              <Button
+                variant="contained"
+                startIcon={<CloudUploadIcon />}
+                onClick={handleUpload}
+                sx={{
+                  background:
+                    "linear-gradient(135deg, #9333ea 0%, #0284c7 100%)",
+                  px: 4,
+                  py: 1.5,
+                  borderRadius: 3,
+                  fontWeight: 600,
+                  fontSize: "1rem",
+                  textTransform: "none",
+                  boxShadow: "0 4px 12px rgba(147, 51, 234, 0.3)",
+                  "&:hover": {
+                    background:
+                      "linear-gradient(135deg, #7c3aed 0%, #0369a1 100%)",
+                    boxShadow: "0 6px 20px rgba(147, 51, 234, 0.4)",
+                  },
+                }}
+              >
+                Upload
+              </Button>
+            </Box>
           </Box>
 
           {/* Search */}

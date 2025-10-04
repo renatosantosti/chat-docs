@@ -107,12 +107,14 @@ const DocumentSearch: React.FC<DocumentSearchProps> = () => {
             elevation={0}
             sx={{
               p: 3,
-              mb: 4,
+              mb: 5,
+              mt: "20px",
               backgroundColor: "#ffffff",
               border: "1px solid #e5e7eb",
               borderRadius: 2,
-              maxWidth: "800px",
-              margin: "0 auto",
+              maxWidth: "900px",
+              marginLeft: "auto",
+              marginRight: "auto",
             }}
           >
             <Stack spacing={3}>
@@ -183,12 +185,14 @@ const DocumentSearch: React.FC<DocumentSearchProps> = () => {
               elevation={0}
               sx={{
                 p: 2.5,
-                mb: 4,
+                mb: 5,
+                mt: "20px",
                 backgroundColor: "#ffffff",
                 border: "1px solid #e5e7eb",
                 borderRadius: 2,
                 maxWidth: "900px",
-                margin: "0 auto",
+                marginLeft: "auto",
+                marginRight: "auto",
               }}
             >
               <Stack
@@ -251,8 +255,9 @@ const DocumentSearch: React.FC<DocumentSearchProps> = () => {
               backgroundColor: "#ffffff",
               border: "1px solid #e5e7eb",
               borderRadius: 2,
-              maxWidth: "1200px",
-              margin: "0 auto",
+              maxWidth: "900px",
+              marginLeft: "auto",
+              marginRight: "auto",
               overflow: "hidden",
             }}
           >

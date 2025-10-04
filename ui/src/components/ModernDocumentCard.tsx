@@ -35,7 +35,9 @@ import {
   SmartToy as AIIcon,
   TrendingUp as TrendingIcon,
 } from "@mui/icons-material";
+import { useDispatch } from "react-redux";
 import { DocumentItem } from "@/shared/models";
+import { documentDeletionRequest } from "@/store/document/slices";
 
 interface ModernDocumentCardProps {
   document: DocumentItem;
@@ -56,6 +58,7 @@ const ModernDocumentCard: React.FC<ModernDocumentCardProps> = ({
   onShare,
   onEdit,
 }) => {
+  const dispatch = useDispatch();
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
   const [isHovered, setIsHovered] = useState(false);
@@ -74,7 +77,7 @@ const ModernDocumentCard: React.FC<ModernDocumentCardProps> = ({
   };
 
   const handleDeleteConfirm = () => {
-    onDelete(document.id);
+    dispatch(documentDeletionRequest(document.id));
     setDeleteDialogOpen(false);
   };
 
