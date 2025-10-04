@@ -1,8 +1,33 @@
-import * as RadioGroup from "@radix-ui/react-radio-group";
+import React, { useEffect, useState } from "react";
+import {
+  Box,
+  Container,
+  Typography,
+  TextField,
+  Button,
+  Paper,
+  Stack,
+  Chip,
+  IconButton,
+  Card,
+  CardContent,
+  Radio,
+  RadioGroup,
+  FormControlLabel,
+  FormControl,
+  InputAdornment,
+  Divider,
+  ThemeProvider,
+  CssBaseline,
+} from "@mui/material";
+import {
+  Search as SearchIcon,
+  Download as DownloadIcon,
+  SmartToy as BotIcon,
+  Chat as ChatIcon,
+  FindInPage as SearchPageIcon,
+} from "@mui/icons-material";
 import Highlighter from "react-highlight-words";
-import { Search, Download, Bot } from "lucide-react";
-import { useEffect, useState } from "react";
-import { Button } from "@/components/ui/button";
 import { useDispatch, useSelector } from "react-redux";
 import {
   askQuestion,
@@ -16,6 +41,7 @@ import { AuthState } from "@/store/auth/slices";
 import { useNavigate, useParams } from "react-router-dom";
 import Loading from "@/components/Loading";
 import MarkdownTypewriterNoCursor from "@/components/MarkdownTypewriterNoCursor";
+import muiTheme from "@/theme/muiTheme";
 
 const ChatDoc = () => {
   const navigate = useNavigate();
@@ -118,180 +144,591 @@ const ChatDoc = () => {
   };
 
   return (
-    <div className="p-6 max-w-6xl mx-auto space-y-8">
-      {/* Header */}
-      <div className="flex justify-between items-center mb-8">
-        <h1 className="text-2xl font-bold gradient-text">
-          <b>{mode === "chat" ? "Chatting with:" : "Search in:"} </b>
-          {documentName}
-        </h1>
-      </div>
-
-      {/* Search Input */}
-      <div className="flex items-center bg-white border border-gray-300 rounded-md shadow-sm px-4 py-2">
-        <Search className="w-5 h-5 text-gray-500 mr-3" />
-        <input
-          type="text"
-          placeholder={
-            mode === "chat" ? "Ask something" : "Search term on all pages..."
-          }
-          className="w-full outline-none text-gray-700 placeholder:text-gray-400"
-          value={searchTerm}
-          onChange={(e) => {
-            setSearchTerm(e.target.value);
-            setShowTermHistory(false);
-            dispatch(askQuestion());
-          }}
-        />
-      </div>
-      {/* Mode Toggle & Button */}
-      <div className="flex items-center justify-between">
-        <RadioGroup.Root
-          className="flex gap-6"
-          value={mode}
-          onValueChange={(val) => {
-            setMode(val as ChatMode);
-            // Reset previous state when switching modes
-            setPages([]);
-            setPriviousTerm("");
-            setSearchTerm("");
-            setShowTermHistory(false);
-            // Clear Redux state to prevent old results from showing
-            dispatch(clearResult());
-            dispatch(askQuestion());
-          }}
-        >
-          <label className="flex items-center gap-2 cursor-pointer">
-            <RadioGroup.Item
-              value="chat"
-              className="w-4 h-4 rounded-full border border-black flex items-center justify-center"
+    <ThemeProvider theme={muiTheme}>
+      <CssBaseline />
+      <Box
+        sx={{
+          minHeight: "100vh",
+          backgroundColor: "background.default",
+        }}
+      >
+        <Container maxWidth="xl" sx={{ py: 3 }}>
+          {/* Header */}
+          <Box sx={{ textAlign: "center", mb: 4 }}>
+            <Typography
+              variant="h4"
+              component="h1"
+              sx={{
+                mb: 2,
+                fontWeight: 700,
+                color: "#1f2937",
+                fontSize: "2rem",
+              }}
             >
-              {mode === "chat" && (
-                <div className="w-2 h-2 bg-black rounded-full" />
-              )}
-            </RadioGroup.Item>
-            <span className="text-sm text-gray-800">AI Chat Doc</span>
-          </label>
-          <label className="flex items-center gap-2 cursor-pointer">
-            <RadioGroup.Item
-              value="pages"
-              className="w-4 h-4 rounded-full border border-black flex items-center justify-center"
+              {mode === "chat" ? "Chat with Document" : "Search in Document"}
+            </Typography>
+
+            {/* Document Info */}
+            <Paper
+              elevation={0}
+              sx={{
+                p: 2.5,
+                mb: 3,
+                backgroundColor: "#ffffff",
+                border: "1px solid #e5e7eb",
+                borderRadius: 2,
+                maxWidth: "900px",
+                margin: "0 auto",
+              }}
             >
-              {mode === "pages" && (
-                <div className="w-2 h-2 bg-black rounded-full" />
-              )}
-            </RadioGroup.Item>
-            <span className="text-sm text-gray-800">Search Term</span>
-          </label>
-        </RadioGroup.Root>
+              <Stack spacing={2}>
+                <Typography
+                  variant="h5"
+                  sx={{
+                    color: "#1f2937",
+                    fontWeight: 600,
+                    fontSize: "1.3rem",
+                  }}
+                >
+                  {documentName}
+                </Typography>
 
-        <Button
-          className="Button-gradient px-4 py-2 rounded hover:opacity-90 transition"
-          onClick={handleChatSearchClick}
-        >
-          {`${mode === "chat" ? " Chat" : "Search"} Now`}
-        </Button>
-      </div>
+                <Stack
+                  direction="row"
+                  spacing={3}
+                  alignItems="center"
+                  justifyContent="center"
+                  flexWrap="wrap"
+                  useFlexGap
+                >
+                  <Stack direction="row" spacing={1} alignItems="center">
+                    <Box
+                      sx={{
+                        p: 0.5,
+                        borderRadius: 1,
+                        backgroundColor: "#f3e8ff",
+                        color: "#9333ea",
+                        display: "flex",
+                        alignItems: "center",
+                        justifyContent: "center",
+                      }}
+                    >
+                      <SearchPageIcon sx={{ fontSize: 16 }} />
+                    </Box>
+                    <Typography
+                      variant="body2"
+                      sx={{ color: "#6b7280", fontWeight: 500 }}
+                    >
+                      {doc?.type?.toUpperCase() || "PDF"}
+                    </Typography>
+                  </Stack>
 
-      {/* AI Generated Text */}
-      {mode === "chat" && (
-        <div className="relative bg-gray-50 border border-gray-200 p-6 rounded-md shadow-sm">
-          <div className="absolute top-4 right-4 text-gray-400">
-            <Bot className="w-5 h-5" />
-          </div>
-          <div className="text-sm">
-            <MarkdownTypewriterNoCursor
-              text={response || getResponseText()}
-              speed={25}
-              className="prose prose-sm max-w-none"
-            />
-          </div>
-        </div>
-      )}
-      <Loading isLoading={isLoading}></Loading>
+                  <Stack direction="row" spacing={1} alignItems="center">
+                    <Box
+                      sx={{
+                        p: 0.5,
+                        borderRadius: 1,
+                        backgroundColor: "#f0f9ff",
+                        color: "#0284c7",
+                        display: "flex",
+                        alignItems: "center",
+                        justifyContent: "center",
+                      }}
+                    >
+                      <ChatIcon sx={{ fontSize: 16 }} />
+                    </Box>
+                    <Typography
+                      variant="body2"
+                      sx={{ color: "#6b7280", fontWeight: 500 }}
+                    >
+                      {doc?.pages || 0} pages
+                    </Typography>
+                  </Stack>
 
-      {pages.length > 0 && (
-        <div className="flex items-center justify-between bg-muted/50 p-2 rounded-md">
-          <p>
-            You have {pages.length || 0} page(s)
-            {priviousTerm && (
-              <>
-                {mode === "chat"
-                  ? " related to question: "
-                  : " matching with term: "}
-                <span className="text-red-500">{priviousTerm}</span>
-              </>
-            )}
-          </p>
-        </div>
-      )}
-      {/* Grid View */}
-      {pages.length > 0 ? (
-        <div className="rounded-md border border-gray-200 overflow-hidden shadow-sm">
-          <div className="grid grid-cols-12 bg-gray-100 text-sm font-medium text-gray-700 px-4 py-3">
-            <div className="col-span-2">Page Number</div>
-            <div className="col-span-8">Source Text</div>
-            <div className="col-span-2"></div>
-          </div>
-          {pages.map((res, index) => (
-            <div
-              key={index}
-              className="grid grid-cols-12 items-center px-4 py-3 border-t text-sm"
-            >
-              <div className="col-span-2 text-gray-700">{res.pageNumber}</div>
-              <div className="col-span-8 text-gray-600">
-                {mode !== "chat" ? (
-                  <Highlighter
-                    highlightClassName=""
-                    searchWords={[...searchTerm.split(" ")]}
-                    autoEscape={true}
-                    textToHighlight={
-                      res.content.length > 100
-                        ? `${res.content.substring(0, limitText)}...`
-                        : res.content
+                  <Stack direction="row" spacing={1} alignItems="center">
+                    <Box
+                      sx={{
+                        p: 0.5,
+                        borderRadius: 1,
+                        backgroundColor: "#f0fdf4",
+                        color: "#16a34a",
+                        display: "flex",
+                        alignItems: "center",
+                        justifyContent: "center",
+                      }}
+                    >
+                      <BotIcon sx={{ fontSize: 16 }} />
+                    </Box>
+                    <Typography
+                      variant="body2"
+                      sx={{ color: "#6b7280", fontWeight: 500 }}
+                    >
+                      AI Ready
+                    </Typography>
+                  </Stack>
+                </Stack>
+
+                {doc?.description && (
+                  <Typography
+                    variant="body2"
+                    sx={{
+                      color: "#9ca3af",
+                      fontStyle: "italic",
+                      mt: 1,
+                    }}
+                  >
+                    {doc.description}
+                  </Typography>
+                )}
+              </Stack>
+              <Box sx={{ textAlign: "right" }}>
+                <Button
+                  variant="contained"
+                  startIcon={<DownloadIcon />}
+                  onClick={() => notImplemented()}
+                  sx={{
+                    background:
+                      "linear-gradient(135deg, #9333ea 0%, #0284c7 100%)",
+                    "&:hover": {
+                      background:
+                        "linear-gradient(135deg, #7c3aed 0%, #0369a1 100%)",
+                    },
+                    px: 3,
+                    py: 1,
+                    borderRadius: 2,
+                    fontWeight: 30,
+                    fontSize: "0.95rem",
+                  }}
+                >
+                  Download Full Document
+                </Button>
+              </Box>
+            </Paper>
+          </Box>
+
+          {/* Mode Toggle */}
+          <Paper
+            elevation={0}
+            sx={{
+              p: 3,
+              mb: 3,
+              backgroundColor: "#ffffff",
+              border: "1px solid #e5e7eb",
+              borderRadius: 2,
+              maxWidth: "900px",
+              margin: "0 auto",
+            }}
+          >
+            <Stack spacing={2}>
+              <FormControl component="fieldset">
+                <RadioGroup
+                  row
+                  value={mode}
+                  onChange={(e) => {
+                    setMode(e.target.value as ChatMode);
+                    // Reset previous state when switching modes
+                    setPages([]);
+                    setPriviousTerm("");
+                    setSearchTerm("");
+                    setShowTermHistory(false);
+                    // Clear Redux state to prevent old results from showing
+                    dispatch(clearResult());
+                    dispatch(askQuestion());
+                  }}
+                  sx={{ justifyContent: "center" }}
+                >
+                  <FormControlLabel
+                    value="chat"
+                    control={
+                      <Radio
+                        sx={{
+                          color: "#9333ea",
+                          "&.Mui-checked": {
+                            color: "#9333ea",
+                          },
+                        }}
+                      />
+                    }
+                    label={
+                      <Stack direction="row" spacing={1} alignItems="center">
+                        <ChatIcon sx={{ fontSize: 20, color: "#9333ea" }} />
+                        <Typography sx={{ fontWeight: 500 }}>
+                          AI Chat
+                        </Typography>
+                      </Stack>
+                    }
+                    sx={{ mr: 4 }}
+                  />
+                  <FormControlLabel
+                    value="pages"
+                    control={
+                      <Radio
+                        sx={{
+                          color: "#9333ea",
+                          "&.Mui-checked": {
+                            color: "#9333ea",
+                          },
+                        }}
+                      />
+                    }
+                    label={
+                      <Stack direction="row" spacing={1} alignItems="center">
+                        <SearchPageIcon
+                          sx={{ fontSize: 20, color: "#0284c7" }}
+                        />
+                        <Typography sx={{ fontWeight: 500 }}>
+                          Search Pages
+                        </Typography>
+                      </Stack>
                     }
                   />
-                ) : (
-                  <span>
-                    {res.content.length > 100
-                      ? `${res.content.substring(0, limitText)}...`
-                      : res.content}
-                  </span>
-                )}
-              </div>
-              <div className="col-span-2 text-right">
-                <Button
-                  className="flex items-center gap-2 px-3 py-1 text-sm border rounded  hover:opacity-90 transition"
-                  onClick={() => notImplemented()}
-                >
-                  <Download className="w-4 h-4" />
-                  Download page
-                </Button>
-              </div>
-            </div>
-          ))}
-        </div>
-      ) : (
-        mode === "pages" &&
-        filtered &&
-        pages.length === 0 && (
-          <div className="relative justify-center bg-gray-50 border border-gray-200 p-6 rounded-md shadow-sm">
-            <p className="text-sm text-gray-800">Empty Result.</p>
-          </div>
-        )
-      )}
+                </RadioGroup>
+              </FormControl>
 
-      {/* Full Document Download */}
-      <div className="text-right">
-        <Button
-          className="Button-gradient inline-flex items-center gap-2 px-5 py-2 rounded hover:opacity-90 transition"
-          onClick={() => notImplemented()}
-        >
-          <Download className="w-4 h-4" />
-          Download Full Document
-        </Button>
-      </div>
-    </div>
+              {/* Search Input */}
+              <TextField
+                fullWidth
+                placeholder={
+                  mode === "chat"
+                    ? "Ask something about this document..."
+                    : "Search for terms across all pages..."
+                }
+                value={searchTerm}
+                onChange={(e) => {
+                  setSearchTerm(e.target.value);
+                  setShowTermHistory(false);
+                  dispatch(askQuestion());
+                }}
+                InputProps={{
+                  startAdornment: (
+                    <InputAdornment position="start">
+                      <SearchIcon sx={{ color: "#6b7280" }} />
+                    </InputAdornment>
+                  ),
+                }}
+                sx={{
+                  "& .MuiOutlinedInput-root": {
+                    borderRadius: 2,
+                    backgroundColor: "#ffffff",
+                    "&:hover .MuiOutlinedInput-notchedOutline": {
+                      borderColor: "#9333ea",
+                    },
+                    "&.Mui-focused .MuiOutlinedInput-notchedOutline": {
+                      borderColor: "#9333ea",
+                      borderWidth: 2,
+                    },
+                  },
+                }}
+              />
+
+              {/* Action Button */}
+              <Box sx={{ textAlign: "center" }}>
+                <Button
+                  variant="contained"
+                  onClick={handleChatSearchClick}
+                  startIcon={mode === "chat" ? <BotIcon /> : <SearchIcon />}
+                  sx={{
+                    background:
+                      "linear-gradient(135deg, #9333ea 0%, #0284c7 100%)",
+                    "&:hover": {
+                      background:
+                        "linear-gradient(135deg, #7c3aed 0%, #0369a1 100%)",
+                    },
+                    px: 3,
+                    py: 1,
+                    borderRadius: 2,
+                    fontWeight: 500,
+                    fontSize: "0.95rem",
+                  }}
+                >
+                  {mode === "chat" ? "Start Chat" : "Search Pages"}
+                </Button>
+              </Box>
+            </Stack>
+          </Paper>
+
+          {/* AI Generated Text */}
+          {mode === "chat" && (
+            <Paper
+              elevation={0}
+              sx={{
+                p: 3,
+                mb: 3,
+                backgroundColor: "#ffffff",
+                border: "1px solid #e5e7eb",
+                borderRadius: 2,
+                maxWidth: "900px",
+                margin: "0 auto",
+                position: "relative",
+              }}
+            >
+              <Stack
+                direction="row"
+                alignItems="center"
+                spacing={2}
+                sx={{ mb: 2 }}
+              >
+                <Box
+                  sx={{
+                    p: 1,
+                    borderRadius: 1.5,
+                    backgroundColor: "#f3e8ff",
+                    color: "#9333ea",
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                  }}
+                >
+                  <BotIcon sx={{ fontSize: 20 }} />
+                </Box>
+                <Typography
+                  variant="subtitle1"
+                  sx={{ fontWeight: 600, color: "#1f2937" }}
+                >
+                  AI Assistant
+                </Typography>
+              </Stack>
+
+              <Box
+                sx={{
+                  backgroundColor: "#f9fafb",
+                  borderRadius: 1.5,
+                  p: 2,
+                  border: "1px solid #e5e7eb",
+                }}
+              >
+                <MarkdownTypewriterNoCursor
+                  text={response || getResponseText()}
+                  speed={25}
+                />
+              </Box>
+            </Paper>
+          )}
+
+          <Loading isLoading={isLoading}></Loading>
+
+          {/* Results Summary */}
+          {pages.length > 0 && (
+            <Paper
+              elevation={0}
+              sx={{
+                p: 2.5,
+                mb: 3,
+                backgroundColor: "#ffffff",
+                border: "1px solid #e5e7eb",
+                borderRadius: 2,
+                maxWidth: "900px",
+                margin: "0 auto",
+              }}
+            >
+              <Stack
+                direction="row"
+                spacing={2}
+                alignItems="center"
+                justifyContent="center"
+              >
+                <Chip
+                  icon={mode === "chat" ? <BotIcon /> : <SearchIcon />}
+                  label={`${pages.length} page${pages.length !== 1 ? "s" : ""} found`}
+                  sx={{
+                    backgroundColor: mode === "chat" ? "#f3e8ff" : "#f0f9ff",
+                    color: mode === "chat" ? "#9333ea" : "#0284c7",
+                    border: `1px solid ${mode === "chat" ? "#e9d5ff" : "#bae6fd"}`,
+                    fontWeight: 500,
+                  }}
+                />
+                {priviousTerm && (
+                  <Chip
+                    label={
+                      mode === "chat"
+                        ? `Related to: "${priviousTerm}"`
+                        : `Matching: "${priviousTerm}"`
+                    }
+                    size="small"
+                    sx={{
+                      backgroundColor: "#f0fdf4",
+                      color: "#16a34a",
+                      border: "1px solid #bbf7d0",
+                      fontWeight: 500,
+                    }}
+                  />
+                )}
+              </Stack>
+            </Paper>
+          )}
+          {/* Results Grid */}
+          {pages.length > 0 ? (
+            <Paper
+              elevation={0}
+              sx={{
+                mb: 3,
+                backgroundColor: "#ffffff",
+                border: "1px solid #e5e7eb",
+                borderRadius: 2,
+                maxWidth: "900px",
+                margin: "0 auto",
+                overflow: "hidden",
+              }}
+            >
+              {/* Header */}
+              <Box
+                sx={{
+                  backgroundColor: "#f9fafb",
+                  borderBottom: "1px solid #e5e7eb",
+                  p: 1.5,
+                }}
+              >
+                <Stack direction="row" spacing={3} alignItems="center">
+                  <Typography
+                    variant="subtitle2"
+                    sx={{
+                      fontWeight: 600,
+                      color: "#1f2937",
+                      minWidth: "80px",
+                      fontSize: "0.85rem",
+                    }}
+                  >
+                    Page
+                  </Typography>
+                  <Typography
+                    variant="subtitle2"
+                    sx={{
+                      fontWeight: 600,
+                      color: "#1f2937",
+                      flex: 1,
+                      fontSize: "0.85rem",
+                    }}
+                  >
+                    Content
+                  </Typography>
+                  <Typography
+                    variant="subtitle2"
+                    sx={{
+                      fontWeight: 600,
+                      color: "#1f2937",
+                      minWidth: "100px",
+                      textAlign: "center",
+                      fontSize: "0.85rem",
+                    }}
+                  >
+                    Actions
+                  </Typography>
+                </Stack>
+              </Box>
+
+              {/* Results */}
+              {pages.map((res, index) => (
+                <Box
+                  key={index}
+                  sx={{
+                    p: 2.5,
+                    borderBottom:
+                      index < pages.length - 1 ? "1px solid #e5e7eb" : "none",
+                    "&:hover": {
+                      backgroundColor: "#f9fafb",
+                    },
+                  }}
+                >
+                  <Stack direction="row" spacing={4} alignItems="flex-start">
+                    <Box sx={{ minWidth: "80px" }}>
+                      <Chip
+                        label={`Page ${res.pageNumber}`}
+                        size="small"
+                        sx={{
+                          backgroundColor: "#f3e8ff",
+                          color: "#9333ea",
+                          fontWeight: 500,
+                          fontSize: "0.75rem",
+                        }}
+                      />
+                    </Box>
+                    <Box sx={{ flex: 1 }}>
+                      <Typography
+                        variant="body2"
+                        sx={{
+                          color: "#4b5563",
+                          lineHeight: 1.5,
+                          backgroundColor: "#f9fafb",
+                          p: 1.5,
+                          borderRadius: 1.5,
+                          border: "1px solid #e5e7eb",
+                          fontSize: "0.85rem",
+                        }}
+                      >
+                        {mode !== "chat" ? (
+                          <Highlighter
+                            highlightClassName="bg-yellow-200"
+                            searchWords={[...searchTerm.split(" ")]}
+                            autoEscape={true}
+                            textToHighlight={
+                              res.content.length > limitText
+                                ? `${res.content.substring(0, limitText)}...`
+                                : res.content
+                            }
+                          />
+                        ) : (
+                          <span>
+                            {res.content.length > limitText
+                              ? `${res.content.substring(0, limitText)}...`
+                              : res.content}
+                          </span>
+                        )}
+                      </Typography>
+                    </Box>
+                    <Box sx={{ minWidth: "100px", textAlign: "center" }}>
+                      <Button
+                        variant="outlined"
+                        size="small"
+                        startIcon={<DownloadIcon />}
+                        onClick={() => notImplemented()}
+                        sx={{
+                          borderColor: "#9333ea",
+                          color: "#9333ea",
+                          "&:hover": {
+                            borderColor: "#7c3aed",
+                            backgroundColor: "#f3e8ff",
+                          },
+                          fontSize: "0.75rem",
+                          py: 0.5,
+                          px: 1.5,
+                        }}
+                      >
+                        Download
+                      </Button>
+                    </Box>
+                  </Stack>
+                </Box>
+              ))}
+            </Paper>
+          ) : (
+            mode === "pages" &&
+            filtered &&
+            pages.length === 0 && (
+              <Paper
+                elevation={0}
+                sx={{
+                  p: 4,
+                  mb: 3,
+                  backgroundColor: "#ffffff",
+                  border: "1px solid #e5e7eb",
+                  borderRadius: 2,
+                  maxWidth: "900px",
+                  margin: "0 auto",
+                  textAlign: "center",
+                }}
+              >
+                <Typography variant="h6" sx={{ color: "#6b7280" }}>
+                  No results found
+                </Typography>
+                <Typography variant="body2" sx={{ color: "#9ca3af", mt: 1 }}>
+                  Try adjusting your search terms or try a different query.
+                </Typography>
+              </Paper>
+            )
+          )}
+        </Container>
+      </Box>
+    </ThemeProvider>
   );
 };
 
