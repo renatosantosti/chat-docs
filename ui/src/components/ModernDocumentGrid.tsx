@@ -1,6 +1,5 @@
 import React from "react";
 import {
-  Grid,
   Box,
   Typography,
   Stack,
@@ -69,24 +68,26 @@ const ModernDocumentGrid: React.FC<ModernDocumentGridProps> = ({
           width: 120,
           height: 120,
           borderRadius: "50%",
-          backgroundColor: "grey.100",
+          backgroundColor: "#f3e8ff",
           display: "flex",
           alignItems: "center",
           justifyContent: "center",
           mb: 3,
         }}
       >
-        <DocIcon sx={{ fontSize: 48, color: "grey.400" }} />
+        <DocIcon sx={{ fontSize: 48, color: "#9333ea" }} />
       </Box>
 
-      <Typography variant="h5" sx={{ mb: 2, fontWeight: 600 }}>
+      <Typography
+        variant="h4"
+        sx={{ mb: 2, fontWeight: 700, color: "#1f2937" }}
+      >
         No documents found
       </Typography>
 
       <Typography
-        variant="body1"
-        color="text.secondary"
-        sx={{ mb: 4, maxWidth: 400 }}
+        variant="h6"
+        sx={{ mb: 4, maxWidth: 500, color: "#6b7280", fontWeight: 400 }}
       >
         Start building your document intelligence hub by uploading your first
         document. Our AI will help you analyze and extract insights from your
@@ -99,10 +100,13 @@ const ModernDocumentGrid: React.FC<ModernDocumentGridProps> = ({
           startIcon={<AddIcon />}
           onClick={onUpload}
           sx={{
-            background: "linear-gradient(135deg, #667eea 0%, #764ba2 100%)",
+            background: "linear-gradient(135deg, #9333ea 0%, #0284c7 100%)",
             "&:hover": {
-              background: "linear-gradient(135deg, #5a6fd8 0%, #6a4190 100%)",
+              background: "linear-gradient(135deg, #7c3aed 0%, #0369a1 100%)",
             },
+            px: 4,
+            py: 1.5,
+            fontSize: "1rem",
           }}
         >
           Upload First Document
@@ -113,6 +117,16 @@ const ModernDocumentGrid: React.FC<ModernDocumentGridProps> = ({
             variant="outlined"
             startIcon={<RefreshIcon />}
             onClick={onRefresh}
+            sx={{
+              borderColor: "#9333ea",
+              color: "#9333ea",
+              "&:hover": {
+                borderColor: "#7c3aed",
+                backgroundColor: "#f3e8ff",
+              },
+              px: 4,
+              py: 1.5,
+            }}
           >
             Refresh
           </Button>
@@ -122,10 +136,23 @@ const ModernDocumentGrid: React.FC<ModernDocumentGridProps> = ({
   );
 
   const renderLoadingSkeletons = () => (
-    <Grid container spacing={3}>
+    <Box
+      sx={{
+        display: "flex",
+        flexWrap: "wrap",
+        gap: 3,
+        justifyContent: "center",
+      }}
+    >
       {Array.from({ length: 6 }).map((_, index) => (
-        <Grid item xs={12} sm={6} md={4} lg={3} key={index}>
-          <Paper elevation={1} sx={{ p: 2, borderRadius: 2 }}>
+        <Box
+          key={index}
+          sx={{ flex: "1 1 280px", minWidth: "280px", maxWidth: "350px" }}
+        >
+          <Paper
+            elevation={0}
+            sx={{ p: 2, borderRadius: 3, border: "1px solid #e5e7eb" }}
+          >
             <Stack spacing={2}>
               <Skeleton
                 variant="rectangular"
@@ -160,30 +187,40 @@ const ModernDocumentGrid: React.FC<ModernDocumentGridProps> = ({
               />
             </Stack>
           </Paper>
-        </Grid>
+        </Box>
       ))}
-    </Grid>
+    </Box>
   );
 
   const renderDocumentStats = () => (
     <Paper
       elevation={0}
       sx={{
-        p: 2,
-        mb: 3,
-        backgroundColor: "grey.50",
-        border: "1px solid",
-        borderColor: "grey.200",
-        borderRadius: 2,
+        p: 3,
+        mb: 4,
+        backgroundColor: "#ffffff",
+        border: "1px solid #e5e7eb",
+        borderRadius: 3,
+        maxWidth: "1200px",
+        margin: "0 auto",
       }}
     >
-      <Stack direction="row" spacing={3} alignItems="center">
+      <Stack
+        direction="row"
+        spacing={3}
+        alignItems="center"
+        justifyContent="center"
+      >
         <Stack direction="row" spacing={1} alignItems="center">
           <Chip
             icon={<DocIcon />}
             label={`${documents.length} Documents`}
-            color="primary"
-            variant="outlined"
+            sx={{
+              backgroundColor: "#f3e8ff",
+              color: "#9333ea",
+              border: "1px solid #e9d5ff",
+              fontWeight: 500,
+            }}
           />
         </Stack>
 
@@ -191,7 +228,12 @@ const ModernDocumentGrid: React.FC<ModernDocumentGridProps> = ({
           <Chip
             label={`Page ${currentPage} of ${totalPages}`}
             size="small"
-            variant="outlined"
+            sx={{
+              backgroundColor: "#f0f9ff",
+              color: "#0284c7",
+              border: "1px solid #bae6fd",
+              fontWeight: 500,
+            }}
           />
         </Stack>
 
@@ -200,7 +242,12 @@ const ModernDocumentGrid: React.FC<ModernDocumentGridProps> = ({
             <Chip
               label={`${Math.min(documents.length, 12)} per page`}
               size="small"
-              variant="outlined"
+              sx={{
+                backgroundColor: "#f0fdf4",
+                color: "#16a34a",
+                border: "1px solid #bbf7d0",
+                fontWeight: 500,
+              }}
             />
           </Stack>
         )}
@@ -225,16 +272,21 @@ const ModernDocumentGrid: React.FC<ModernDocumentGridProps> = ({
     <Box>
       {renderDocumentStats()}
 
-      <Grid container spacing={3}>
+      <Box
+        sx={{
+          display: "flex",
+          flexWrap: "wrap",
+          gap: 3,
+          justifyContent: "center",
+        }}
+      >
         {documents.map((document) => (
-          <Grid
-            item
-            xs={12}
-            sm={6}
-            md={4}
-            lg={3}
+          <Box
             key={document.id}
             sx={{
+              flex: "1 1 280px",
+              minWidth: "280px",
+              maxWidth: "350px",
               display: "flex",
               "& > *": {
                 width: "100%",
@@ -250,9 +302,9 @@ const ModernDocumentGrid: React.FC<ModernDocumentGridProps> = ({
               onShare={onShare}
               onEdit={onEdit}
             />
-          </Grid>
+          </Box>
         ))}
-      </Grid>
+      </Box>
 
       {/* Paginação */}
       {totalPages > 1 && (
@@ -260,7 +312,7 @@ const ModernDocumentGrid: React.FC<ModernDocumentGridProps> = ({
           sx={{
             display: "flex",
             justifyContent: "center",
-            mt: 4,
+            mt: 6,
             mb: 2,
           }}
         >
@@ -276,13 +328,21 @@ const ModernDocumentGrid: React.FC<ModernDocumentGridProps> = ({
               "& .MuiPaginationItem-root": {
                 borderRadius: 2,
                 fontWeight: 500,
+                fontSize: "1rem",
               },
               "& .Mui-selected": {
-                background: "linear-gradient(135deg, #667eea 0%, #764ba2 100%)",
+                background: "linear-gradient(135deg, #9333ea 0%, #0284c7 100%)",
                 color: "white",
                 "&:hover": {
                   background:
-                    "linear-gradient(135deg, #5a6fd8 0%, #6a4190 100%)",
+                    "linear-gradient(135deg, #7c3aed 0%, #0369a1 100%)",
+                },
+              },
+              "& .MuiPaginationItem-root:not(.Mui-selected)": {
+                border: "1px solid #e5e7eb",
+                "&:hover": {
+                  backgroundColor: "#f3e8ff",
+                  borderColor: "#9333ea",
                 },
               },
             }}

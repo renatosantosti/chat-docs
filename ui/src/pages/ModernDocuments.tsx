@@ -9,13 +9,13 @@ import {
   Fab,
   Zoom,
   useScrollTrigger,
+  Typography,
 } from "@mui/material";
 import { KeyboardArrowUp as KeyboardArrowUpIcon } from "@mui/icons-material";
 import { useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { documentListRequest, DocumentState } from "@/store/document/slices";
 import muiTheme from "@/theme/muiTheme";
-import DocumentsHeader from "@/components/DocumentsHeader";
 import AdvancedSearch from "@/components/AdvancedSearch";
 import ModernDocumentGrid from "@/components/ModernDocumentGrid";
 import Loading from "@/components/Loading";
@@ -174,17 +174,35 @@ const ModernDocuments: React.FC = () => {
         {/* Anchor for scroll to top */}
         <Box id="back-to-top-anchor" />
 
-        <Container maxWidth="xl" sx={{ py: 4 }}>
+        <Container maxWidth="xl" sx={{ py: 2 }}>
           {/* Header */}
-          <DocumentsHeader
-            totalDocuments={documents.length}
-            onUpload={handleUpload}
-            onRefresh={handleRefresh}
-            viewMode={viewMode}
-            onViewModeChange={setViewMode}
-            onFilter={handleFilter}
-            onSort={handleSort}
-          />
+          <Box sx={{ textAlign: "center", mb: 6 }}>
+            <Typography
+              variant="h3"
+              component="h1"
+              sx={{
+                mb: 2,
+                fontWeight: 700,
+                color: "#1f2937",
+                fontSize: "2.5rem",
+              }}
+            >
+              My Documents
+            </Typography>
+            <Typography
+              variant="h6"
+              sx={{
+                color: "#6b7280",
+                fontWeight: 400,
+                maxWidth: 600,
+                margin: "0 auto",
+                mb: 4,
+              }}
+            >
+              Manage and interact with your documents using AI-powered
+              intelligence.
+            </Typography>
+          </Box>
 
           {/* Search */}
           <AdvancedSearch
@@ -225,9 +243,9 @@ const ModernDocuments: React.FC = () => {
             size="medium"
             aria-label="scroll back to top"
             sx={{
-              background: "linear-gradient(135deg, #667eea 0%, #764ba2 100%)",
+              background: "linear-gradient(135deg, #9333ea 0%, #0284c7 100%)",
               "&:hover": {
-                background: "linear-gradient(135deg, #5a6fd8 0%, #6a4190 100%)",
+                background: "linear-gradient(135deg, #7c3aed 0%, #0369a1 100%)",
               },
             }}
           >

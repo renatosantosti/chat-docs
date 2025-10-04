@@ -98,16 +98,16 @@ const ModernDocumentCard: React.FC<ModernDocumentCardProps> = ({
   const getDocumentTypeColor = (type: string) => {
     switch (type.toLowerCase()) {
       case "pdf":
-        return "#e53e3e";
+        return "#9333ea";
       case "doc":
       case "docx":
-        return "#2b6cb0";
+        return "#0284c7";
       case "txt":
-        return "#4a5568";
+        return "#6b7280";
       case "image":
-        return "#38a169";
+        return "#16a34a";
       default:
-        return "#718096";
+        return "#9333ea";
     }
   };
 
@@ -140,9 +140,12 @@ const ModernDocumentCard: React.FC<ModernDocumentCardProps> = ({
           cursor: "pointer",
           position: "relative",
           overflow: "visible",
+          borderRadius: 3,
+          border: "1px solid #e5e7eb",
           "&:hover": {
             transform: "translateY(-4px)",
-            boxShadow: "0 8px 25px rgba(0, 0, 0, 0.15)",
+            boxShadow: "0 20px 40px rgba(0, 0, 0, 0.1)",
+            borderColor: "#9333ea",
           },
         }}
       >
@@ -151,12 +154,12 @@ const ModernDocumentCard: React.FC<ModernDocumentCardProps> = ({
           sx={{
             position: "relative",
             height: 120,
-            background: `linear-gradient(135deg, ${getDocumentTypeColor(document.type)} 0%, ${getDocumentTypeColor(document.type)}dd 100%)`,
+            background: `linear-gradient(135deg, ${getDocumentTypeColor(document.type)} 0%, ${getDocumentTypeColor(document.type)}80 100%)`,
             display: "flex",
             alignItems: "center",
             justifyContent: "center",
             color: "white",
-            borderRadius: "16px 16px 0 0",
+            borderRadius: "24px 24px 0 0",
           }}
         >
           <Box sx={{ textAlign: "center" }}>
@@ -297,11 +300,14 @@ const ModernDocumentCard: React.FC<ModernDocumentCardProps> = ({
               onClick={() => onChat(document.id)}
               sx={{
                 flex: 1,
-                background: "linear-gradient(135deg, #667eea 0%, #764ba2 100%)",
+                background: "linear-gradient(135deg, #9333ea 0%, #0284c7 100%)",
                 "&:hover": {
                   background:
-                    "linear-gradient(135deg, #5a6fd8 0%, #6a4190 100%)",
+                    "linear-gradient(135deg, #7c3aed 0%, #0369a1 100%)",
                 },
+                borderRadius: 2,
+                py: 1.5,
+                fontWeight: 500,
               }}
             >
               Chat with AI
